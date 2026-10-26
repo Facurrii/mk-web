@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { ShoppingBag, Menu, X } from "lucide-react";
-import { InstagramIcon, SafetyPinIcon } from "@/components/ui/icons";
+import { InstagramIcon, ScissorsIcon } from "@/components/ui/icons";
 import { useCartStore } from "@/store/cart-store";
 import { STORE_INFO } from "@/lib/constants";
 
@@ -44,7 +44,7 @@ export function Navbar() {
           <Link href="/" className="group flex items-center gap-2.5 sm:gap-3.5">
             {/* Ganchito / Safety Pin Icon */}
             <div className="shrink-0 transition-transform duration-300 group-hover:rotate-12 group-hover:scale-105">
-              <SafetyPinIcon className="h-10 w-10 sm:h-11 sm:w-11 drop-shadow-2xs" withHalo={true} />
+              <ScissorsIcon className="h-10 w-10 sm:h-11 sm:w-11 drop-shadow-2xs" withHalo={true} />
             </div>
 
             {/* Tipografía Mer Kilmurray Design */}
