@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { MessageCircle, Truck, CreditCard, ShieldCheck } from "lucide-react";
-import { InstagramIcon, ScissorsIcon } from "@/components/ui/icons";
+import { InstagramIcon } from "@/components/ui/icons";
 import { STORE_INFO } from "@/lib/constants";
 
 export function Footer() {
@@ -46,9 +46,6 @@ export function Footer() {
         {/* Brand column */}
         <div className="md:col-span-2 space-y-4">
           <div className="flex items-center gap-3">
-            <div className="shrink-0">
-              <ScissorsIcon className="h-11 w-11" withHalo={true} />
-            </div>
             <div className="flex flex-col">
               <h3 className="font-serif text-2xl tracking-wider text-[#FBF4E8] uppercase">
                 Mer Kilmurray

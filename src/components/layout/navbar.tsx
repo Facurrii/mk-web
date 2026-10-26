@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { ShoppingBag, Menu, X } from "lucide-react";
-import { InstagramIcon, ScissorsIcon } from "@/components/ui/icons";
+import { InstagramIcon } from "@/components/ui/icons";
 import { useCartStore } from "@/store/cart-store";
 import { STORE_INFO } from "@/lib/constants";
 
@@ -39,14 +39,9 @@ export function Navbar() {
           {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
 
-        {/* Brand / Logo con Ícono de Alfiler de Gancho */}
+        {/* Brand / Logo */}
         <div className="flex items-center">
           <Link href="/" className="group flex items-center gap-2.5 sm:gap-3.5">
-            {/* Ganchito / Safety Pin Icon */}
-            <div className="shrink-0 transition-transform duration-300 group-hover:rotate-12 group-hover:scale-105">
-              <ScissorsIcon className="h-10 w-10 sm:h-11 sm:w-11 drop-shadow-2xs" withHalo={true} />
-            </div>
-
             {/* Tipografía Mer Kilmurray Design */}
             <div className="flex flex-col">
               <span className="text-xl sm:text-2xl font-serif tracking-wider text-[#631E2E] uppercase transition-colors group-hover:text-[#47131F] leading-tight">
