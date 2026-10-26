@@ -8,7 +8,6 @@ interface ProductsPageProps {
   }>;
 }
 
-
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
   const { categoria } = await searchParams;
 
@@ -20,26 +19,29 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const activeCategory = categories.find((c) => c.slug === categoria);
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 space-y-10">
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14 space-y-12">
       {/* Header */}
-      <div className="border-b border-stone-200 pb-8 text-center sm:text-left">
-        <h1 className="font-serif text-3xl sm:text-4xl font-medium text-stone-900">
+      <div className="border-b border-[#631E2E]/10 pb-10 text-center sm:text-left">
+        <span className="font-script text-2xl text-[#631E2E] block">
+          confección & detalle
+        </span>
+        <h1 className="font-serif text-3xl sm:text-5xl font-medium text-[#631E2E] mt-1">
           {activeCategory ? activeCategory.name : "Catálogo de Productos"}
         </h1>
-        <p className="mt-2 text-sm text-stone-600 max-w-2xl font-light">
+        <p className="mt-3 text-sm sm:text-base text-[#2A1A1E]/75 max-w-2xl font-light leading-relaxed">
           {activeCategory
             ? activeCategory.description
-            : "Explorá todas nuestras piezas textiles pensadas para la costura, el trabajo y la organización diaria."}
+            : "Explorá todas nuestras piezas textiles pensadas para la costura, el trabajo y la organización de tu día a día."}
         </p>
 
         {/* Category Pills Filter */}
-        <div className="mt-8 flex flex-wrap gap-2 justify-center sm:justify-start">
+        <div className="mt-8 flex flex-wrap gap-2.5 justify-center sm:justify-start">
           <Link
             href="/productos"
-            className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
+            className={`rounded-full px-5 py-2 text-xs font-semibold transition-all ${
               !categoria
-                ? "bg-stone-900 text-white"
-                : "bg-stone-100 text-stone-600 hover:bg-stone-200"
+                ? "bg-[#631E2E] text-[#FBF4E8] shadow-sm"
+                : "bg-white/80 border border-[#631E2E]/20 text-[#631E2E] hover:bg-white hover:border-[#631E2E]"
             }`}
           >
             Todos ({products.length})
@@ -51,10 +53,10 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               <Link
                 key={cat.id}
                 href={`/productos?categoria=${cat.slug}`}
-                className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
+                className={`rounded-full px-5 py-2 text-xs font-semibold transition-all ${
                   isActive
-                    ? "bg-stone-900 text-white"
-                    : "bg-stone-100 text-stone-600 hover:bg-stone-200"
+                    ? "bg-[#631E2E] text-[#FBF4E8] shadow-sm"
+                    : "bg-white/80 border border-[#631E2E]/20 text-[#631E2E] hover:bg-white hover:border-[#631E2E]"
                 }`}
               >
                 {cat.name}
@@ -66,19 +68,19 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
       {/* Product Grid */}
       {products.length === 0 ? (
-        <div className="py-20 text-center">
-          <p className="text-stone-500 text-sm">
-            No se encontraron productos en esta categoría.
+        <div className="py-20 text-center rounded-2xl bg-white/60 border border-[#631E2E]/10 p-12">
+          <p className="text-[#631E2E] font-serif text-lg font-medium">
+            No se encontraron productos en esta colección.
           </p>
           <Link
             href="/productos"
-            className="mt-4 inline-block text-xs font-medium text-stone-900 underline"
+            className="mt-4 inline-block text-xs font-semibold text-[#631E2E] underline hover:text-[#47131F]"
           >
-            Ver todos los productos
+            Ver todos los productos disponibles
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}

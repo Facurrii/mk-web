@@ -53,23 +53,23 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <div className="group relative flex flex-col rounded-lg border border-stone-200/80 bg-white p-4 transition-all duration-300 hover:border-stone-300 hover:shadow-md">
+    <div className="group relative flex flex-col rounded-2xl border border-[#631E2E]/10 bg-white p-5 transition-all duration-300 hover:border-[#E2A6BA] hover:shadow-xl">
       {/* Product Image */}
       <Link
         href={`/productos/${product.slug}`}
-        className="block overflow-hidden rounded-md bg-stone-100 aspect-square relative"
+        className="block overflow-hidden rounded-xl bg-[#FBF4E8] aspect-square relative border border-[#631E2E]/5"
       >
-        <div className="w-full h-full flex flex-col items-center justify-center text-stone-400 group-hover:scale-105 transition-transform duration-500">
-          <ShoppingBag className="h-12 w-12 stroke-[1.2] text-stone-400" />
-          <span className="text-[11px] tracking-wider uppercase mt-2 text-stone-500 font-medium">
-            {selectedVariant ? selectedVariant.color_name : "Diseño Textil"}
+        <div className="w-full h-full flex flex-col items-center justify-center text-[#631E2E]/30 group-hover:scale-105 transition-transform duration-500">
+          <ShoppingBag className="h-14 w-14 stroke-[1.1]" />
+          <span className="font-script text-base mt-2 text-[#631E2E]/60">
+            {selectedVariant ? selectedVariant.color_name : "diseño textil"}
           </span>
         </div>
 
-        {/* Badge de Agotado en la imagen si el producto completo no tiene stock */}
+        {/* Badge de Agotado en la imagen */}
         {isEntireProductOutOfStock && (
-          <div className="absolute inset-0 bg-stone-900/40 backdrop-blur-2xs flex items-center justify-center">
-            <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-stone-900 shadow">
+          <div className="absolute inset-0 bg-[#631E2E]/40 backdrop-blur-2xs flex items-center justify-center">
+            <span className="rounded-full bg-[#FBF4E8] px-3.5 py-1 text-xs font-semibold text-[#631E2E] shadow-md">
               Agotado
             </span>
           </div>
@@ -77,12 +77,12 @@ export function ProductCard({ product }: ProductCardProps) {
 
         {/* Selected Color Chip badge */}
         {selectedVariant?.color_hex && !isEntireProductOutOfStock && (
-          <div className="absolute top-3 right-3 flex items-center gap-1.5 rounded-full bg-white/90 backdrop-blur-xs px-2 py-1 shadow-xs border border-stone-200 text-[11px] text-stone-700">
+          <div className="absolute top-3 right-3 flex items-center gap-1.5 rounded-full bg-white/95 backdrop-blur-xs px-2.5 py-1 shadow-2xs border border-[#631E2E]/10 text-[11px] text-[#2A1A1E]">
             <span
               className="h-2.5 w-2.5 rounded-full border border-stone-300"
               style={{ backgroundColor: selectedVariant.color_hex }}
             />
-            <span>{selectedVariant.color_name}</span>
+            <span className="font-medium">{selectedVariant.color_name}</span>
             {isCurrentVariantOutOfStock && (
               <span className="text-[9px] font-semibold text-rose-600 ml-0.5">
                 (Agotado)
@@ -93,34 +93,34 @@ export function ProductCard({ product }: ProductCardProps) {
       </Link>
 
       {/* Info */}
-      <div className="mt-4 flex flex-1 flex-col justify-between">
+      <div className="mt-5 flex flex-1 flex-col justify-between">
         <div>
           {/* Category */}
           {product.category?.name && (
-            <span className="text-[11px] font-medium uppercase tracking-wider text-stone-500">
-              {product.category.name}
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-[#B4AF3B]">
+              Colección {product.category.name}
             </span>
           )}
 
           {/* Title */}
-          <h3 className="mt-1 text-base font-medium text-stone-900 group-hover:text-stone-700 transition">
+          <h3 className="mt-1 text-lg font-serif font-medium text-[#631E2E] group-hover:text-[#47131F] transition">
             <Link href={`/productos/${product.slug}`}>{product.name}</Link>
           </h3>
 
           {/* Short description */}
           {product.description && (
-            <p className="mt-1.5 text-xs text-stone-500 line-clamp-2 leading-relaxed">
+            <p className="mt-1.5 text-xs text-[#2A1A1E]/65 line-clamp-2 leading-relaxed font-light">
               {product.description}
             </p>
           )}
         </div>
 
         {/* Color variants selector & Price */}
-        <div className="mt-4 pt-3 border-t border-stone-100">
+        <div className="mt-5 pt-3.5 border-t border-[#631E2E]/10">
           {/* Color dots */}
           {variants.length > 0 && (
-            <div className="flex items-center gap-1.5 mb-3">
-              <span className="text-[11px] text-stone-400 mr-1">Color:</span>
+            <div className="flex items-center gap-2 mb-3.5">
+              <span className="text-[11px] text-[#2A1A1E]/50 mr-0.5">Color:</span>
               {variants.map((v) => {
                 const isOutOfStock = (v.stock ?? 0) <= 0;
                 return (
@@ -130,15 +130,15 @@ export function ProductCard({ product }: ProductCardProps) {
                     onClick={() => setSelectedVariant(v)}
                     className={`h-5 w-5 rounded-full border transition-all relative ${
                       selectedVariant?.color_name === v.color_name
-                        ? "ring-2 ring-stone-900 ring-offset-1 scale-110"
+                        ? "ring-2 ring-[#631E2E] ring-offset-2 scale-110"
                         : "border-stone-300 hover:scale-105"
-                    } ${isOutOfStock ? "opacity-40" : ""}`}
+                    } ${isOutOfStock ? "opacity-35" : ""}`}
                     style={{ backgroundColor: v.color_hex || "#888" }}
                     title={`${v.color_name} ${isOutOfStock ? "(Agotado)" : `(${v.stock} unid.)`}`}
                     aria-label={`Seleccionar color ${v.color_name}`}
                   >
                     {isOutOfStock && (
-                      <span className="absolute inset-0 flex items-center justify-center text-white text-[9px] font-bold">
+                      <span className="absolute inset-0 flex items-center justify-center text-white text-[8px] font-bold">
                         ✕
                       </span>
                     )}
@@ -150,8 +150,10 @@ export function ProductCard({ product }: ProductCardProps) {
 
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-xs text-stone-400 block font-light">Precio</span>
-              <span className="text-base font-semibold text-stone-900">
+              <span className="text-[10px] text-[#2A1A1E]/50 block uppercase tracking-wider">
+                Precio
+              </span>
+              <span className="text-base font-semibold text-[#631E2E]">
                 {formatPrice(product.base_price)}
               </span>
             </div>
@@ -161,7 +163,7 @@ export function ProductCard({ product }: ProductCardProps) {
               <button
                 type="button"
                 disabled
-                className="flex items-center gap-1 rounded-md bg-stone-100 px-3 py-2 text-xs font-medium text-stone-400 cursor-not-allowed border border-stone-200"
+                className="flex items-center gap-1 rounded-xl bg-[#FBF4E8] px-3.5 py-2 text-xs font-semibold text-stone-400 cursor-not-allowed border border-stone-200"
                 title="Color sin stock"
               >
                 <Ban className="h-3.5 w-3.5 text-rose-500" />
@@ -171,17 +173,17 @@ export function ProductCard({ product }: ProductCardProps) {
               <button
                 type="button"
                 onClick={handleAddToCart}
-                className={`flex items-center gap-1.5 rounded-md px-3 py-2 text-xs font-medium transition-all ${
+                className={`flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-semibold transition-all shadow-sm active:scale-95 ${
                   justAdded
-                    ? "bg-emerald-700 text-white"
-                    : "bg-stone-900 text-white hover:bg-stone-800"
+                    ? "bg-[#B4AF3B] text-white"
+                    : "bg-[#631E2E] text-[#FBF4E8] hover:bg-[#47131F]"
                 }`}
                 title="Agregar al carrito"
               >
                 {justAdded ? (
                   <>
                     <Check className="h-3.5 w-3.5" />
-                    <span>¡Agregado!</span>
+                    <span>¡Listo!</span>
                   </>
                 ) : (
                   <>

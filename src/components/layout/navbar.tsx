@@ -27,13 +27,13 @@ export function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-stone-200 bg-stone-50/90 backdrop-blur-md">
+    <header className="sticky top-0 z-40 w-full border-b border-[#631E2E]/10 bg-[#FBF4E8]/90 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 h-20">
         {/* Mobile menu trigger */}
         <button
           type="button"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden p-2 text-stone-700 hover:text-stone-900"
+          className="md:hidden p-2 text-[#631E2E] hover:text-[#47131F]"
           aria-label="Abrir menú"
         >
           {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -42,22 +42,28 @@ export function Navbar() {
         {/* Brand / Logo */}
         <div className="flex flex-col items-center md:items-start">
           <Link href="/" className="group flex flex-col">
-            <span className="text-xl sm:text-2xl font-serif tracking-wider text-stone-900 uppercase">
+            <span className="text-xl sm:text-2xl font-serif tracking-wider text-[#631E2E] uppercase transition-colors group-hover:text-[#47131F]">
               Mer Kilmurray
             </span>
-            <span className="text-[10px] tracking-widest text-stone-500 uppercase -mt-1 group-hover:text-stone-700 transition">
-              Design • Textil & Organización
-            </span>
+            <div className="flex items-center gap-1.5 -mt-1">
+              <span className="text-[10px] tracking-widest text-[#631E2E]/70 uppercase font-sans">
+                Design
+              </span>
+              <span className="text-[#B4AF3B] text-xs">•</span>
+              <span className="font-script text-base text-[#631E2E] lowercase leading-none">
+                textil & organización
+              </span>
+            </div>
           </Link>
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8 text-sm font-medium text-stone-600">
+        <nav className="hidden md:flex items-center space-x-8 text-sm font-medium text-[#631E2E]/80">
           {navLinks.map((link) => (
             <Link
               key={link.name}
               href={link.href}
-              className="hover:text-stone-950 transition-colors py-1 relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-stone-900 after:scale-x-0 hover:after:scale-x-100 after:transition-transform"
+              className="hover:text-[#631E2E] transition-colors py-1 relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-[#E2A6BA] after:scale-x-0 hover:after:scale-x-100 after:transition-transform"
             >
               {link.name}
             </Link>
@@ -70,7 +76,7 @@ export function Navbar() {
             href={STORE_INFO.instagramUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden sm:flex text-stone-600 hover:text-pink-700 transition-colors"
+            className="hidden sm:flex text-[#631E2E]/80 hover:text-[#631E2E] transition-colors"
             title="Instagram"
           >
             <InstagramIcon className="h-5 w-5" />
@@ -80,12 +86,12 @@ export function Navbar() {
           <button
             type="button"
             onClick={() => setIsOpen(true)}
-            className="relative p-2 text-stone-800 hover:text-stone-950 transition-colors"
+            className="relative p-2 text-[#631E2E] hover:text-[#47131F] transition-colors"
             aria-label="Ver carrito"
           >
             <ShoppingBag className="h-6 w-6" />
             {totalItems > 0 && (
-              <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-stone-900 text-[11px] font-semibold text-white">
+              <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#631E2E] text-[11px] font-semibold text-[#FBF4E8] ring-2 ring-[#FBF4E8]">
                 {totalItems}
               </span>
             )}
@@ -95,33 +101,33 @@ export function Navbar() {
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-stone-200 bg-stone-50 px-4 py-6 space-y-4">
+        <div className="md:hidden border-t border-[#631E2E]/10 bg-[#FBF4E8] px-4 py-6 space-y-4 shadow-lg">
           <div className="flex flex-col space-y-3">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className="text-base font-medium text-stone-700 hover:text-stone-950 py-1"
+                className="text-base font-medium text-[#631E2E] hover:text-[#47131F] py-1"
               >
                 {link.name}
               </Link>
             ))}
           </div>
 
-          <div className="pt-4 border-t border-stone-200 flex items-center justify-between text-sm text-stone-600">
+          <div className="pt-4 border-t border-[#631E2E]/10 flex items-center justify-between text-sm text-[#631E2E]/80">
             <a
               href={STORE_INFO.instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-stone-700 hover:text-pink-700"
+              className="flex items-center gap-2 text-[#631E2E] hover:text-[#47131F]"
             >
               <InstagramIcon className="h-4 w-4" />
               <span>{STORE_INFO.instagramHandle}</span>
             </a>
             <Link
               href="/admin/login"
-              className="text-xs text-stone-400 hover:text-stone-600 underline"
+              className="text-xs text-[#631E2E]/60 hover:text-[#631E2E] underline"
             >
               Acceso Admin
             </Link>

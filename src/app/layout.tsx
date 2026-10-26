@@ -1,19 +1,30 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Playfair_Display, Plus_Jakarta_Sans, Dancing_Script } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { CartSheet } from "@/components/shop/cart-sheet";
 import { WhatsAppFloatingButton } from "@/components/shop/whatsapp-floating-button";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Tipografía para titulares (equivalente web a Black Mango)
+const serifFont = Playfair_Display({
+  variable: "--font-serif",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+// Tipografía para textos y navegación
+const sansFont = Plus_Jakarta_Sans({
+  variable: "--font-sans",
   subsets: ["latin"],
+  display: "swap",
+});
+
+// Tipografía de acento caligráfico (equivalente web a Backwards Script)
+const scriptFont = Dancing_Script({
+  variable: "--font-script",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -40,11 +51,11 @@ export default function RootLayout({
     <html
       lang="es"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${serifFont.variable} ${sansFont.variable} ${scriptFont.variable} h-full antialiased`}
     >
       <body
         suppressHydrationWarning
-        className="min-h-full flex flex-col bg-stone-50 text-stone-900 selection:bg-stone-200"
+        className="min-h-full flex flex-col bg-[#FBF4E8] text-[#2A1A1E] selection:bg-[#E2A6BA]/40 selection:text-[#631E2E]"
       >
         <Navbar />
         <CartSheet />

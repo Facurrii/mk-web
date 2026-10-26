@@ -1,3 +1,14 @@
+export const BRAND_COLORS = {
+  cream: "#FBF4E8",
+  rose: "#E2A6BA",
+  wine: "#631E2E",
+  wineDark: "#47131F",
+  wineLight: "#7E283C",
+  mustard: "#B4AF3B",
+  blue: "#B3C1CC",
+  blueLight: "#DCE5EB",
+};
+
 export const STORE_INFO = {
   name: process.env.NEXT_PUBLIC_STORE_NAME || "Mer Kilmurray Design",
   owner: "Mercedes",
@@ -21,14 +32,14 @@ export const DELIVERY_OPTIONS = [
     id: "cadeteria" as const,
     title: "Cadetería local",
     description: "Entrega a domicilio dentro de la ciudad.",
-    price: null, // A coordinar según zona
+    price: null,
     requiresAddress: true,
   },
   {
     id: "andreani" as const,
     title: "Envío Andreani",
     description: "Envío a sucursal o domicilio a todo el país.",
-    price: null, // A cotizar según código postal
+    price: null,
     requiresAddress: true,
   },
 ];
@@ -47,7 +58,10 @@ export const PAYMENT_OPTIONS = [
 ];
 
 export const COLOR_PALETTE = [
+  { name: "Borravino", hex: "#631E2E" },
+  { name: "Rosa empolvado", hex: "#E2A6BA" },
+  { name: "Mostaza oliva", hex: "#B4AF3B" },
+  { name: "Celeste grisáceo", hex: "#B3C1CC" },
   { name: "Gris", hex: "#71717A" },
-  { name: "Bordó", hex: "#800020" },
   { name: "Verde", hex: "#2D5A27" },
 ];
