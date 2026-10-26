@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { ShoppingBag, Menu, X } from "lucide-react";
-import { InstagramIcon } from "@/components/ui/icons";
+import { InstagramIcon, SafetyPinIcon } from "@/components/ui/icons";
 import { useCartStore } from "@/store/cart-store";
 import { STORE_INFO } from "@/lib/constants";
 
@@ -39,20 +39,28 @@ export function Navbar() {
           {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
 
-        {/* Brand / Logo */}
-        <div className="flex flex-col items-center md:items-start">
-          <Link href="/" className="group flex flex-col">
-            <span className="text-xl sm:text-2xl font-serif tracking-wider text-[#631E2E] uppercase transition-colors group-hover:text-[#47131F]">
-              Mer Kilmurray
-            </span>
-            <div className="flex items-center gap-1.5 -mt-1">
-              <span className="text-[10px] tracking-widest text-[#631E2E]/70 uppercase font-sans">
-                Design
+        {/* Brand / Logo con Ícono de Alfiler de Gancho */}
+        <div className="flex items-center">
+          <Link href="/" className="group flex items-center gap-2.5 sm:gap-3.5">
+            {/* Ganchito / Safety Pin Icon */}
+            <div className="shrink-0 transition-transform duration-300 group-hover:rotate-12 group-hover:scale-105">
+              <SafetyPinIcon className="h-10 w-10 sm:h-11 sm:w-11 drop-shadow-2xs" withHalo={true} />
+            </div>
+
+            {/* Tipografía Mer Kilmurray Design */}
+            <div className="flex flex-col">
+              <span className="text-xl sm:text-2xl font-serif tracking-wider text-[#631E2E] uppercase transition-colors group-hover:text-[#47131F] leading-tight">
+                Mer Kilmurray
               </span>
-              <span className="text-[#B4AF3B] text-xs">•</span>
-              <span className="font-script text-base text-[#631E2E] lowercase leading-none">
-                textil & organización
-              </span>
+              <div className="flex items-center gap-1.5 -mt-0.5">
+                <span className="text-[10px] tracking-widest text-[#631E2E]/80 uppercase font-sans font-semibold">
+                  DESIGN
+                </span>
+                <span className="text-[#B4AF3B] text-xs leading-none">•</span>
+                <span className="font-script text-base sm:text-lg text-[#631E2E] lowercase leading-none">
+                  textil & organización
+                </span>
+              </div>
             </div>
           </Link>
         </div>

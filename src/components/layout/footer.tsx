@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { MessageCircle, Truck, CreditCard, ShieldCheck } from "lucide-react";
-import { InstagramIcon } from "@/components/ui/icons";
+import { InstagramIcon, SafetyPinIcon } from "@/components/ui/icons";
 import { STORE_INFO } from "@/lib/constants";
 
 export function Footer() {
@@ -45,13 +45,18 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
         {/* Brand column */}
         <div className="md:col-span-2 space-y-4">
-          <div className="flex flex-col">
-            <h3 className="font-serif text-2xl tracking-wider text-[#FBF4E8] uppercase">
-              Mer Kilmurray
-            </h3>
-            <span className="font-script text-lg text-[#E2A6BA] -mt-1 lowercase">
-              diseño textil & organización funcional
-            </span>
+          <div className="flex items-center gap-3">
+            <div className="shrink-0">
+              <SafetyPinIcon className="h-11 w-11" withHalo={true} />
+            </div>
+            <div className="flex flex-col">
+              <h3 className="font-serif text-2xl tracking-wider text-[#FBF4E8] uppercase">
+                Mer Kilmurray
+              </h3>
+              <span className="font-script text-lg text-[#E2A6BA] -mt-1 lowercase">
+                diseño textil & organización funcional
+              </span>
+            </div>
           </div>
 
           <p className="text-sm text-[#FBF4E8]/75 max-w-md leading-relaxed font-light">
