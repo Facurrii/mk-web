@@ -23,6 +23,9 @@ const orderSchema = z.object({
     })
   ).min(1, "El carrito no puede estar vacío"),
   totalAmount: z.number().nonnegative(),
+}).refine((d) => d.paymentMethod !== "efectivo" || d.deliveryMethod === "retiro", {
+  message: "El pago en efectivo solo está disponible para retiro en persona. Para envíos, elegí transferencia.",
+  path: ["paymentMethod"],
 });
 
 export type CreateOrderInput = CheckoutFormData & {

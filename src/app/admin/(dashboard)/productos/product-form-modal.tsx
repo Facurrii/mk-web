@@ -8,7 +8,7 @@ import { saveProductAction, uploadProductImageAction } from "@/actions/products"
 // Paleta sugerida para agregar con un solo clic
 const PRESET_COLORS = [
   { name: "Gris", hex: "#71717A" },
-  { name: "Bordó", hex: "#800020" },
+  { name: "Rosa", hex: "#E2A6BA" },
   { name: "Verde", hex: "#2D5A27" },
   { name: "Negro", hex: "#18181B" },
   { name: "Crudo / Beige", hex: "#D6D3D1" },
@@ -157,7 +157,7 @@ export function ProductFormModal({
       } else {
         setVariants([
           { color_name: "Gris", color_hex: "#71717A", stock: 5 },
-          { color_name: "Bordó", color_hex: "#800020", stock: 3 },
+          { color_name: "Rosa", color_hex: "#E2A6BA", stock: 3 },
           { color_name: "Verde", color_hex: "#2D5A27", stock: 4 },
         ]);
       }
@@ -181,7 +181,7 @@ export function ProductFormModal({
       setIsActive(true);
       setVariants([
         { color_name: "Gris", color_hex: "#71717A", stock: 5 },
-        { color_name: "Bordó", color_hex: "#800020", stock: 3 },
+        { color_name: "Rosa", color_hex: "#E2A6BA", stock: 3 },
         { color_name: "Verde", color_hex: "#2D5A27", stock: 4 },
       ]);
       setImages([]);

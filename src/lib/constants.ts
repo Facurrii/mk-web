@@ -17,6 +17,11 @@ export const STORE_INFO = {
   instagramUrl: process.env.NEXT_PUBLIC_INSTAGRAM_URL || "https://instagram.com/merkilmurray.design",
   instagramHandle: process.env.NEXT_PUBLIC_INSTAGRAM_HANDLE || "@merkilmurray.design",
   location: "Río Cuarto, Córdoba, Argentina",
+  // Zona que se muestra en el mapa del footer. A propósito NO es la dirección exacta:
+  // la dirección del retiro se pasa por WhatsApp al coordinar.
+  pickupArea: "Río Cuarto, Córdoba",
+  // Búsqueda del mapa: solo la calle, sin número, para marcar la zona y no la casa.
+  pickupMapQuery: process.env.NEXT_PUBLIC_PICKUP_MAP_QUERY || "Humberto Primo, Río Cuarto, Córdoba",
   story: `Mi nombre es Mercedes. Soy diseñadora de indumentaria y licenciada en Diseño, y este proyecto nació de una necesidad propia: organizar mejor mi espacio de trabajo, mis herramientas de costura y mi día a día. Hoy, busco transformar esa necesidad en productos funcionales que también ayuden a otras personas a organizarse y hacer su rutina un poquito más fácil.`,
 };
 

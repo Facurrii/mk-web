@@ -19,6 +19,20 @@ export async function getCategories(): Promise<Category[]> {
   }
 }
 
+// Orden fijo de los colores en la tienda; los colores nuevos van al final.
+const COLOR_ORDER = ["gris", "rosa", "verde"];
+
+function sortVariants(product: Product): Product {
+  const rank = (name: string) => {
+    const i = COLOR_ORDER.indexOf(name.trim().toLowerCase());
+    return i === -1 ? COLOR_ORDER.length : i;
+  };
+  return {
+    ...product,
+    variants: [...(product.variants ?? [])].sort((a, b) => rank(a.color_name) - rank(b.color_name)),
+  };
+}
+
 export async function getProducts(options?: {
   categorySlug?: string;
   featuredOnly?: boolean;
@@ -54,10 +68,10 @@ export async function getProducts(options?: {
     }
 
     if (options?.categorySlug) {
-      return data.filter((p) => p.category?.slug === options.categorySlug);
+      return data.filter((p) => p.category?.slug === options.categorySlug).map(sortVariants);
     }
 
-    return data;
+    return data.map(sortVariants);
   } catch {
     let filtered = [...INITIAL_PRODUCTS];
     if (options?.categorySlug) {
@@ -89,7 +103,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
       return INITIAL_PRODUCTS.find((p) => p.slug === slug) || null;
     }
 
-    return data;
+    return sortVariants(data);
   } catch {
     return INITIAL_PRODUCTS.find((p) => p.slug === slug) || null;
   }

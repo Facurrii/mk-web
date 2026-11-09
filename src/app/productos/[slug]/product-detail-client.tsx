@@ -16,7 +16,7 @@ import { Product, ProductVariant } from "@/types/database";
 import { formatPrice } from "@/lib/utils";
 import { useCartStore } from "@/store/cart-store";
 import { COLOR_PALETTE, STORE_INFO } from "@/lib/constants";
-import { getImagesForVariant } from "@/lib/product-images";
+import { getImagesForVariant, pickDefaultVariant } from "@/lib/product-images";
 import { ProductGallery } from "@/components/shop/product-gallery";
 
 interface ProductDetailClientProps {
@@ -39,7 +39,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
           created_at: "",
         }));
 
-  const initialVariant = variants.find((v) => (v.stock ?? 0) > 0) || variants[0];
+  const initialVariant = pickDefaultVariant(product, variants);
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant>(initialVariant);
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);

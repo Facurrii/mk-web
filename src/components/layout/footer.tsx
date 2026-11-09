@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MessageCircle, Truck, CreditCard, ShieldCheck } from "lucide-react";
+import { MessageCircle, Truck, CreditCard, ShieldCheck, MapPin } from "lucide-react";
 import { InstagramIcon } from "@/components/ui/icons";
 import { STORE_INFO } from "@/lib/constants";
 
@@ -56,9 +56,23 @@ export function Footer() {
             </div>
           </div>
 
-          <p className="text-sm text-[#FBF4E8]/75 max-w-md leading-relaxed font-light">
-            {STORE_INFO.story}
-          </p>
+          {/* Zona de retiro (la dirección exacta se coordina por WhatsApp) */}
+          <div className="max-w-md overflow-hidden rounded-2xl border border-white/10 bg-[#3A0F19]">
+            <iframe
+              title={`Mapa de la zona de retiro: ${STORE_INFO.pickupArea}`}
+              src={`https://www.google.com/maps?q=${encodeURIComponent(STORE_INFO.pickupMapQuery)}&z=15&output=embed`}
+              className="block h-44 w-full border-0 grayscale-[30%]"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+            <div className="flex items-start gap-2.5 px-4 py-3">
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#E2A6BA]" />
+              <p className="text-xs leading-relaxed text-[#FBF4E8]/75">
+                <span className="font-medium text-[#FBF4E8]">Retiro sin cargo en {STORE_INFO.pickupArea}.</span>{" "}
+                La dirección exacta te la pasamos por WhatsApp al coordinar.
+              </p>
+            </div>
+          </div>
 
           <div className="flex items-center gap-3 pt-2">
             <a

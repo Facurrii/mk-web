@@ -8,7 +8,7 @@ import { Product, ProductVariant } from "@/types/database";
 import { formatPrice } from "@/lib/utils";
 import { useCartStore } from "@/store/cart-store";
 import { COLOR_PALETTE } from "@/lib/constants";
-import { getImagesForVariant } from "@/lib/product-images";
+import { getImagesForVariant, pickDefaultVariant } from "@/lib/product-images";
 
 interface ProductCardProps {
   product: Product;
@@ -29,7 +29,7 @@ export function ProductCard({ product }: ProductCardProps) {
           created_at: "",
         }));
 
-  const [selectedVariant, setSelectedVariant] = useState<ProductVariant>(variants[0]);
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariant>(() => pickDefaultVariant(product, variants));
   const [justAdded, setJustAdded] = useState(false);
 
   const isCurrentVariantOutOfStock = (selectedVariant?.stock ?? 0) <= 0;
@@ -60,7 +60,7 @@ export function ProductCard({ product }: ProductCardProps) {
       {/* Product Image */}
       <Link
         href={`/productos/${product.slug}`}
-        className="block overflow-hidden rounded-xl bg-[#FBF4E8] aspect-square relative border border-[#631E2E]/5"
+        className="block overflow-hidden rounded-xl bg-[#FBF4E8] aspect-[3/4] relative border border-[#631E2E]/5"
       >
         {cover ? (
           <Image

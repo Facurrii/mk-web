@@ -40,7 +40,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     category: INITIAL_CATEGORIES[0],
     variants: [
       { id: "var-1-1", product_id: "prod-1", color_name: "Gris", color_hex: "#71717A", stock: 5, sku: "BOL-MC-GRI", created_at: "" },
-      { id: "var-1-2", product_id: "prod-1", color_name: "Bordó", color_hex: "#800020", stock: 3, sku: "BOL-MC-BOR", created_at: "" },
+      { id: "var-1-2", product_id: "prod-1", color_name: "Rosa", color_hex: "#E2A6BA", stock: 3, sku: "BOL-MC-ROS", created_at: "" },
       { id: "var-1-3", product_id: "prod-1", color_name: "Verde", color_hex: "#2D5A27", stock: 4, sku: "BOL-MC-VER", created_at: "" },
     ],
   },
@@ -59,7 +59,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     category: INITIAL_CATEGORIES[0],
     variants: [
       { id: "var-2-1", product_id: "prod-2", color_name: "Gris", color_hex: "#71717A", stock: 10, sku: "COS-POR-GRI", created_at: "" },
-      { id: "var-2-2", product_id: "prod-2", color_name: "Bordó", color_hex: "#800020", stock: 8, sku: "COS-POR-BOR", created_at: "" },
+      { id: "var-2-2", product_id: "prod-2", color_name: "Rosa", color_hex: "#E2A6BA", stock: 8, sku: "COS-POR-ROS", created_at: "" },
       { id: "var-2-3", product_id: "prod-2", color_name: "Verde", color_hex: "#2D5A27", stock: 8, sku: "COS-POR-VER", created_at: "" },
     ],
   },
@@ -78,7 +78,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     category: INITIAL_CATEGORIES[1],
     variants: [
       { id: "var-3-1", product_id: "prod-3", color_name: "Gris", color_hex: "#71717A", stock: 6, sku: "POR-NOT-GRI", created_at: "" },
-      { id: "var-3-2", product_id: "prod-3", color_name: "Bordó", color_hex: "#800020", stock: 4, sku: "POR-NOT-BOR", created_at: "" },
+      { id: "var-3-2", product_id: "prod-3", color_name: "Rosa", color_hex: "#E2A6BA", stock: 4, sku: "POR-NOT-ROS", created_at: "" },
       { id: "var-3-3", product_id: "prod-3", color_name: "Verde", color_hex: "#2D5A27", stock: 5, sku: "POR-NOT-VER", created_at: "" },
     ],
   },
@@ -97,7 +97,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     category: INITIAL_CATEGORIES[2],
     variants: [
       { id: "var-4-1", product_id: "prod-4", color_name: "Gris", color_hex: "#71717A", stock: 8, sku: "NEC-ORG-GRI", created_at: "" },
-      { id: "var-4-2", product_id: "prod-4", color_name: "Bordó", color_hex: "#800020", stock: 6, sku: "NEC-ORG-BOR", created_at: "" },
+      { id: "var-4-2", product_id: "prod-4", color_name: "Rosa", color_hex: "#E2A6BA", stock: 6, sku: "NEC-ORG-ROS", created_at: "" },
       { id: "var-4-3", product_id: "prod-4", color_name: "Verde", color_hex: "#2D5A27", stock: 7, sku: "NEC-ORG-VER", created_at: "" },
     ],
   },
@@ -116,7 +116,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     category: INITIAL_CATEGORIES[2],
     variants: [
       { id: "var-5-1", product_id: "prod-5", color_name: "Gris", color_hex: "#71717A", stock: 10, sku: "POR-DOC-GRI", created_at: "" },
-      { id: "var-5-2", product_id: "prod-5", color_name: "Bordó", color_hex: "#800020", stock: 5, sku: "POR-DOC-BOR", created_at: "" },
+      { id: "var-5-2", product_id: "prod-5", color_name: "Rosa", color_hex: "#E2A6BA", stock: 5, sku: "POR-DOC-ROS", created_at: "" },
       { id: "var-5-3", product_id: "prod-5", color_name: "Verde", color_hex: "#2D5A27", stock: 5, sku: "POR-DOC-VER", created_at: "" },
     ],
   },

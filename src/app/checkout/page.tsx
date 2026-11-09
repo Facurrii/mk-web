@@ -221,7 +221,11 @@ export default function CheckoutPage() {
                       name="deliveryMethod"
                       value={opt.id}
                       checked={deliveryMethod === opt.id}
-                      onChange={() => setDeliveryMethod(opt.id)}
+                      onChange={() => {
+                        setDeliveryMethod(opt.id);
+                        // Con envío (cadetería / Andreani) solo se puede pagar por transferencia
+                        if (opt.id !== "retiro") setPaymentMethod("transferencia");
+                      }}
                       className="mt-1 accent-[#631E2E]"
                     />
                     <div>
@@ -261,33 +265,40 @@ export default function CheckoutPage() {
               </h2>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {PAYMENT_OPTIONS.map((pay) => (
-                  <label
-                    key={pay.id}
-                    className={`flex items-start gap-3 rounded-2xl border p-4 cursor-pointer transition ${
-                      paymentMethod === pay.id
-                        ? "border-[#631E2E] bg-[#E2A6BA]/15 ring-1 ring-[#631E2E]"
-                        : "border-[#631E2E]/15 bg-white hover:border-[#631E2E]/40"
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value={pay.id}
-                      checked={paymentMethod === pay.id}
-                      onChange={() => setPaymentMethod(pay.id)}
-                      className="mt-1 accent-[#631E2E]"
-                    />
-                    <div>
-                      <span className="text-sm font-semibold text-[#631E2E] block">
-                        {pay.title}
-                      </span>
-                      <span className="text-xs text-[#2A1A1E]/70 block mt-0.5 font-light">
-                        {pay.description}
-                      </span>
-                    </div>
-                  </label>
-                ))}
+                {PAYMENT_OPTIONS.map((pay) => {
+                  // El efectivo solo aplica cuando se retira en persona
+                  const disabled = pay.id === "efectivo" && deliveryMethod !== "retiro";
+                  return (
+                    <label
+                      key={pay.id}
+                      className={`flex items-start gap-3 rounded-2xl border p-4 transition ${
+                        disabled
+                          ? "cursor-not-allowed border-[#631E2E]/10 bg-stone-50 opacity-60"
+                          : paymentMethod === pay.id
+                          ? "cursor-pointer border-[#631E2E] bg-[#E2A6BA]/15 ring-1 ring-[#631E2E]"
+                          : "cursor-pointer border-[#631E2E]/15 bg-white hover:border-[#631E2E]/40"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value={pay.id}
+                        checked={paymentMethod === pay.id}
+                        disabled={disabled}
+                        onChange={() => setPaymentMethod(pay.id)}
+                        className="mt-1 accent-[#631E2E]"
+                      />
+                      <div>
+                        <span className="text-sm font-semibold text-[#631E2E] block">
+                          {pay.title}
+                        </span>
+                        <span className="text-xs text-[#2A1A1E]/70 block mt-0.5 font-light">
+                          {disabled ? "Solo disponible si retirás en persona." : pay.description}
+                        </span>
+                      </div>
+                    </label>
+                  );
+                })}
               </div>
             </div>
 

@@ -38,7 +38,7 @@ export function ProductGallery({ images, productName, colorName, overlay }: Prod
 
   if (images.length === 0) {
     return (
-      <div className="aspect-square w-full rounded-3xl bg-white border border-[#631E2E]/10 flex flex-col items-center justify-center p-8 relative overflow-hidden shadow-sm">
+      <div className="aspect-[3/4] w-full rounded-3xl bg-white border border-[#631E2E]/10 flex flex-col items-center justify-center p-8 relative overflow-hidden shadow-sm">
         <ShoppingBag className="h-32 w-32 text-[#631E2E]/20 stroke-[1]" />
         <span className="font-serif text-lg font-medium text-[#631E2E] mt-4 uppercase tracking-wider text-center">
           {productName}
@@ -53,7 +53,7 @@ export function ProductGallery({ images, productName, colorName, overlay }: Prod
 
   return (
     <div className="space-y-3">
-      <div className="relative aspect-square w-full rounded-3xl bg-white border border-[#631E2E]/10 overflow-hidden shadow-sm">
+      <div className="relative aspect-[3/4] w-full rounded-3xl bg-white border border-[#631E2E]/10 overflow-hidden shadow-sm">
         <div
           ref={trackRef}
           onScroll={onScroll}
@@ -103,7 +103,7 @@ export function ProductGallery({ images, productName, colorName, overlay }: Prod
               type="button"
               onClick={() => goTo(i)}
               aria-label={`Ver foto ${i + 1}`}
-              className={`relative aspect-square overflow-hidden rounded-xl border-2 transition ${
+              className={`relative aspect-[3/4] overflow-hidden rounded-xl border-2 transition ${
                 i === active ? "border-[#631E2E]" : "border-transparent opacity-70 hover:opacity-100"
               }`}
             >

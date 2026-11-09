@@ -106,7 +106,7 @@ export default async function AdminDashboardPage() {
             Gestión de Productos
           </h2>
           <p className="text-xs text-stone-500 leading-relaxed">
-            Podés modificar precios, cambiar descripciones, activar o pausar piezas y gestionar las variantes de color (Gris, Bordó, Verde).
+            Podés modificar precios, cambiar descripciones, activar o pausar piezas y gestionar las variantes de color (Gris, Rosa, Verde).
           </p>
           <Link
             href="/admin/productos"

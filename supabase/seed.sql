@@ -55,11 +55,11 @@ BEGIN
     ON CONFLICT (slug) DO UPDATE SET description = EXCLUDED.description
     RETURNING id INTO prod_documento;
 
-    -- Variantes de Color: Gris (#71717A), Bordó (#800020), Verde (#2D5A27)
+    -- Variantes de Color: Gris (#71717A), Rosa (#E2A6BA), Verde (#2D5A27)
     IF prod_bolso IS NOT NULL THEN
         INSERT INTO public.product_variants (product_id, color_name, color_hex, stock) VALUES
         (prod_bolso, 'Gris', '#71717A', 5),
-        (prod_bolso, 'Bordó', '#800020', 3),
+        (prod_bolso, 'Rosa', '#E2A6BA', 3),
         (prod_bolso, 'Verde', '#2D5A27', 4)
         ON CONFLICT DO NOTHING;
     END IF;
@@ -67,7 +67,7 @@ BEGIN
     IF prod_costurero IS NOT NULL THEN
         INSERT INTO public.product_variants (product_id, color_name, color_hex, stock) VALUES
         (prod_costurero, 'Gris', '#71717A', 10),
-        (prod_costurero, 'Bordó', '#800020', 8),
+        (prod_costurero, 'Rosa', '#E2A6BA', 8),
         (prod_costurero, 'Verde', '#2D5A27', 8)
         ON CONFLICT DO NOTHING;
     END IF;
@@ -75,7 +75,7 @@ BEGIN
     IF prod_notebook IS NOT NULL THEN
         INSERT INTO public.product_variants (product_id, color_name, color_hex, stock) VALUES
         (prod_notebook, 'Gris', '#71717A', 6),
-        (prod_notebook, 'Bordó', '#800020', 4),
+        (prod_notebook, 'Rosa', '#E2A6BA', 4),
         (prod_notebook, 'Verde', '#2D5A27', 5)
         ON CONFLICT DO NOTHING;
     END IF;
@@ -83,7 +83,7 @@ BEGIN
     IF prod_neceser IS NOT NULL THEN
         INSERT INTO public.product_variants (product_id, color_name, color_hex, stock) VALUES
         (prod_neceser, 'Gris', '#71717A', 8),
-        (prod_neceser, 'Bordó', '#800020', 6),
+        (prod_neceser, 'Rosa', '#E2A6BA', 6),
         (prod_neceser, 'Verde', '#2D5A27', 7)
         ON CONFLICT DO NOTHING;
     END IF;
@@ -91,7 +91,7 @@ BEGIN
     IF prod_documento IS NOT NULL THEN
         INSERT INTO public.product_variants (product_id, color_name, color_hex, stock) VALUES
         (prod_documento, 'Gris', '#71717A', 10),
-        (prod_documento, 'Bordó', '#800020', 5),
+        (prod_documento, 'Rosa', '#E2A6BA', 5),
         (prod_documento, 'Verde', '#2D5A27', 5)
         ON CONFLICT DO NOTHING;
     END IF;
