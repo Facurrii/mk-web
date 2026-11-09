@@ -154,7 +154,7 @@ export default async function HomePage() {
       </section>
 
       {/* Mercedes Story Section */}
-      <section id="historia" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section id="historia" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 scroll-mt-28">
         <div className="rounded-3xl bg-gradient-to-br from-[#631E2E] via-[#521825] to-[#3D111B] text-[#FBF4E8] overflow-hidden p-8 sm:p-14 lg:p-16 relative shadow-xl border border-[#631E2E]">
           {/* Subtle decorative circles with brand colors */}
           <div className="absolute top-0 right-0 w-80 h-80 bg-[#E2A6BA]/15 rounded-full blur-2xl pointer-events-none" />

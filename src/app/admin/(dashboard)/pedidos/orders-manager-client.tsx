@@ -18,6 +18,7 @@ import {
   confirmOrderPaymentAction,
   markOrderDeliveredAction,
 } from "@/actions/admin-orders";
+import { toWhatsAppNumber } from "@/lib/whatsapp";
 
 export type StockByVariant = Record<string, number>;
 
@@ -63,7 +64,7 @@ function getStockShortages(order: Order, stockByVariant: StockByVariant): string
 }
 
 function waLink(order: Order, text: string) {
-  return `https://wa.me/${order.customer_phone.replace(/\D/g, "")}?text=${encodeURIComponent(text)}`;
+  return `https://api.whatsapp.com/send?phone=${toWhatsAppNumber(order.customer_phone)}&text=${encodeURIComponent(text)}`;
 }
 
 export function OrdersManagerClient({
