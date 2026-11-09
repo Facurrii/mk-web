@@ -7,7 +7,7 @@ import { useCartStore } from "@/store/cart-store";
 import { DELIVERY_OPTIONS, PAYMENT_OPTIONS } from "@/lib/constants";
 import { formatPrice } from "@/lib/utils";
 import { DeliveryMethod, PaymentMethod } from "@/types/database";
-import { generateWhatsAppMessage } from "@/lib/whatsapp";
+import { generateWhatsAppMessage, toWhatsAppNumber } from "@/lib/whatsapp";
 import { createOrderAction } from "@/actions/orders";
 
 export default function CheckoutPage() {
@@ -35,6 +35,11 @@ export default function CheckoutPage() {
 
     if (!customerPhone.trim()) {
       setErrorMsg("Por favor, ingresá un número de teléfono o WhatsApp.");
+      return;
+    }
+
+    if (!/^549\d{10}$/.test(toWhatsAppNumber(customerPhone))) {
+      setErrorMsg("Revisá tu celular: poné el código de área y el número, por ejemplo 358 4812345.");
       return;
     }
 
@@ -197,6 +202,9 @@ export default function CheckoutPage() {
                   placeholder="Ej: 358 1234567"
                   className="w-full rounded-xl border border-[#631E2E]/20 bg-white px-3.5 py-2.5 text-base sm:text-sm text-[#2A1A1E] focus:border-[#631E2E] focus:outline-none focus:ring-1 focus:ring-[#631E2E]"
                 />
+                <p className="mt-1 text-[11px] text-[#2A1A1E]/55">
+                  Con código de área, sin 0 ni 15. Ej: 358 4812345
+                </p>
               </div>
             </div>
 

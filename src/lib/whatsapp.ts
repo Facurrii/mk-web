@@ -10,23 +10,17 @@ interface GenerateWhatsAppMessageProps {
 }
 
 /*
- * IMPORTANTE sobre emojis: WhatsApp Web / escritorio rompe los emojis "nuevos"
- * (fuera del rango básico de Unicode, por ejemplo 🌿 💰 📋) al abrir el link y
- * los muestra como "�". Acá solo se usan símbolos del rango básico (✂ ✨ ▪),
- * que se ven bien en celular, web y escritorio.
+ * Emojis del mensaje (elegidos por Mer).
+ * Nota: 🪡 y 🤍 son emojis "nuevos" (fuera del rango básico de Unicode). Con el
+ * link viejo de wa.me, WhatsApp Web/escritorio los mostraba como "�"; con
+ * api.whatsapp.com/send deberían verse bien. Si en la compu vuelven a salir "�",
+ * cambiar por alternativas del rango básico: ✂️ en vez de 🪡 y ♡ en vez de 🤍.
  */
 const SYMBOLS = {
-  brand: "✂️", // ✂️
-  item: "▪️", // ▪️
+  brand: "\u{1FAA1}✨", // 🪡✨
+  item: "\u{1F90D}", // 🤍
   sparkle: "✨", // ✨
 };
-
-/** Quita cualquier carácter fuera del rango básico (emojis que el cliente tipee en las notas). */
-function bmpOnly(text: string): string {
-  return Array.from(text)
-    .filter((ch) => (ch.codePointAt(0) ?? 0) <= 0xffff)
-    .join("");
-}
 
 export function buildWhatsAppText({
   items,
@@ -40,7 +34,7 @@ export function buildWhatsAppText({
   const lines: string[] = [];
 
   // Sin número de pedido: es interno de Mer (lo ve en el admin), no se le muestra al cliente.
-  lines.push(`${SYMBOLS.brand} *NUEVO PEDIDO*`);
+  lines.push(`${SYMBOLS.brand}*NUEVO PEDIDO*`);
   lines.push(`_${STORE_INFO.name}_`);
   lines.push("");
   lines.push(`¡Hola ${STORE_INFO.owner}! Quiero hacer este pedido desde la web:`);
@@ -78,7 +72,7 @@ export function buildWhatsAppText({
 
   lines.push(`¿Me confirmás la disponibilidad y cómo seguimos? ¡Gracias! ${SYMBOLS.sparkle}`);
 
-  return lines.map((line) => bmpOnly(line).trimEnd()).join("\n");
+  return lines.map((line) => line.trimEnd()).join("\n");
 }
 
 export function generateWhatsAppMessage(props: GenerateWhatsAppMessageProps): string {
@@ -88,14 +82,31 @@ export function generateWhatsAppMessage(props: GenerateWhatsAppMessageProps): st
 }
 
 /**
- * Convierte un teléfono argentino escrito como sea ("358 480-0580", "0358 4800580",
- * "+54 9 358 4800580") al formato que usa WhatsApp: 549 + código de área + número.
+ * Convierte un celular argentino escrito como sea al formato de WhatsApp:
+ * 54 (país) + 9 (celular) + código de área sin 0 + número sin 15.
+ *   "358 480-0580"       → 5493584800580
+ *   "0358 15 480-0580"   → 5493584800580
+ *   "+54 9 358 4800580"  → 5493584800580
+ *   "11 15 2345-6789"    → 5491123456789
  */
 export function toWhatsAppNumber(phone: string): string {
   let digits = phone.replace(/\D/g, "");
-  if (digits.startsWith("549")) return digits;
-  if (digits.startsWith("54")) return `549${digits.slice(2)}`;
+
+  if (digits.startsWith("549")) digits = digits.slice(3);
+  else if (digits.startsWith("54")) digits = digits.slice(2);
   digits = digits.replace(/^0+/, "");
-  if (digits.length === 10) return `549${digits}`;
-  return digits;
+
+  // Código de área + número siempre suman 10 dígitos. Si hay 12, sobra el "15"
+  // que se marca después del código de área (que tiene 2, 3 o 4 dígitos).
+  if (digits.length === 12) {
+    const areaLengths = digits.startsWith("11") ? [2] : [3, 4, 2];
+    for (const len of areaLengths) {
+      if (digits.slice(len, len + 2) === "15") {
+        digits = digits.slice(0, len) + digits.slice(len + 2);
+        break;
+      }
+    }
+  }
+
+  return digits.length === 10 ? `549${digits}` : digits;
 }
