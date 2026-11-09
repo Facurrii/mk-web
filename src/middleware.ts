@@ -1,5 +1,6 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { isAllowedAdminEmail } from "@/lib/admin-emails";
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
@@ -50,7 +51,7 @@ export async function middleware(request: NextRequest) {
 
   // Proteger rutas /admin/* excepto /admin/login
   if (pathname.startsWith("/admin") && !pathname.startsWith("/admin/login")) {
-    if (!user) {
+    if (!user || !isAllowedAdminEmail(user.email)) {
       const loginUrl = new URL("/admin/login", request.url);
       loginUrl.searchParams.set("redirectTo", pathname);
       return NextResponse.redirect(loginUrl);
@@ -58,7 +59,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Si el usuario ya está autenticado e intenta ir a /admin/login, redirigir a /admin
-  if (pathname === "/admin/login" && user) {
+  if (pathname === "/admin/login" && user && isAllowedAdminEmail(user.email)) {
     return NextResponse.redirect(new URL("/admin", request.url));
   }
 

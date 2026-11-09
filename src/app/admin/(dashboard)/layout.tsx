@@ -5,6 +5,7 @@ import {
   ShoppingBag,
   ExternalLink,
   LogOut,
+  UserRound,
 } from "lucide-react";
 import { signOutAction } from "@/actions/auth";
 
@@ -51,6 +52,14 @@ export default function AdminDashboardLayout({
           >
             <ShoppingBag className="h-4 w-4" />
             <span>Historial Pedidos</span>
+          </Link>
+
+          <Link
+            href="/admin/cuenta"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-stone-300 hover:text-white hover:bg-stone-800 transition"
+          >
+            <UserRound className="h-4 w-4" />
+            <span>Mi cuenta</span>
           </Link>
         </nav>
 

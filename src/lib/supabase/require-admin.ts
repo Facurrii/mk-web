@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { isAllowedAdminEmail } from "@/lib/admin-emails";
 
 /**
  * Verifica que haya un admin logueado.
@@ -12,7 +13,7 @@ export async function isAdmin(): Promise<boolean> {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    return !!user;
+    return !!user && isAllowedAdminEmail(user.email);
   } catch {
     return false;
   }

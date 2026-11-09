@@ -153,6 +153,9 @@ export function Footer() {
       {/* Copyright */}
       <div className="border-t border-white/10 py-6 text-center text-xs text-[#FBF4E8]/50">
         © 2026 Mer Kilmurray Design. Todos los derechos reservados.
+        <span className="mt-1.5 block text-[10px] tracking-wider text-[#FBF4E8]/30 sm:mt-0 sm:ml-2 sm:inline">
+          <span className="hidden sm:inline">· </span>Developer B.F
+        </span>
       </div>
     </footer>
   );
