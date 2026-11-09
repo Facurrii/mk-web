@@ -314,20 +314,27 @@ export async function uploadProductImageAction(formData: FormData) {
 
     const supabase = createAdminClient();
 
-    const rawExt = file.name.split(".").pop()?.toLowerCase() || "jpg";
-    let fileExt = rawExt;
-    let contentType = "image/jpeg";
+    const buffer = Buffer.from(await file.arrayBuffer());
 
-    if (rawExt === "png") {
-      contentType = "image/png";
-      fileExt = "png";
-    } else if (rawExt === "webp") {
-      contentType = "image/webp";
-      fileExt = "webp";
-    } else {
-      contentType = "image/jpeg";
-      fileExt = "jpg";
+    // El formato se decide por el contenido real del archivo, no por su nombre:
+    // así nunca se guarda (por ejemplo) un HEIC disfrazado de .jpg que después se ve roto.
+    const isJpeg = buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff;
+    const isPng = buffer.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
+    const isWebp =
+      buffer.subarray(0, 4).toString("ascii") === "RIFF" && buffer.subarray(8, 12).toString("ascii") === "WEBP";
+
+    if (!isJpeg && !isPng && !isWebp) {
+      return {
+        success: false,
+        error: "Formato de foto no compatible. Usá JPG, PNG o WEBP (las fotos HEIC del iPhone subilas desde el iPhone).",
+      };
     }
+
+    const [contentType, fileExt] = isPng
+      ? ["image/png", "png"]
+      : isWebp
+      ? ["image/webp", "webp"]
+      : ["image/jpeg", "jpg"];
 
     const cleanFileName = file.name
       .split(".")[0]
@@ -335,9 +342,6 @@ export async function uploadProductImageAction(formData: FormData) {
       .substring(0, 20);
     const fileName = `${Date.now()}_${cleanFileName}.${fileExt}`;
     const filePath = `catalog/${fileName}`;
-
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
 
     const { error: uploadError } = await supabase.storage
       .from("products")

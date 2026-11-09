@@ -18,18 +18,54 @@ const PRESET_COLORS = [
   { name: "Rosa Viejo", hex: "#BE185D" },
 ];
 
+function canvasToBlob(canvas: HTMLCanvasElement, type: string, quality: number): Promise<Blob | null> {
+  return new Promise((resolve) => canvas.toBlob(resolve, type, quality));
+}
+
+/** ¿Es una foto HEIC/HEIF (formato del iPhone)? Por tipo, extensión o firma del archivo. */
+async function looksLikeHeic(file: File): Promise<boolean> {
+  if (/image\/hei[cf]/i.test(file.type) || /\.hei[cf]$/i.test(file.name)) return true;
+  const head = new Uint8Array(await file.slice(0, 16).arrayBuffer());
+  const brand = String.fromCharCode(...head.slice(4, 12));
+  return /^ftyp(heic|heix|hevc|heim|heis|mif1|msf1)/.test(brand);
+}
+
+/**
+ * Convierte una foto HEIC a JPG en el navegador. El conversor (~1 MB) se descarga
+ * solo la primera vez que hace falta, así no hace más lenta la página para nadie.
+ */
+async function convertHeicToJpeg(file: File): Promise<File | null> {
+  try {
+    const { default: heic2any } = await import("heic2any");
+    const result = await heic2any({ blob: file, toType: "image/jpeg", quality: 0.92 });
+    const blob = Array.isArray(result) ? result[0] : result;
+    const baseName = file.name.replace(/\.[^.]+$/, "") || "foto";
+    return new File([blob], `${baseName}.jpg`, { type: "image/jpeg" });
+  } catch (err) {
+    console.error("No se pudo convertir la foto HEIC:", err);
+    return null;
+  }
+}
+
+/**
+ * Prepara una foto para subir: si es HEIC y el navegador no la puede abrir (Windows),
+ * la convierte a JPG; después la achica y comprime. Devuelve null si no se pudo leer.
+ */
+async function prepareImage(file: File): Promise<File | null> {
+  const direct = await compressImage(file);
+  if (direct) return direct;
+  if (!(await looksLikeHeic(file))) return null;
+  const jpeg = await convertHeicToJpeg(file);
+  return jpeg ? compressImage(jpeg) : null;
+}
+
 /**
  * Redimensiona y comprime una imagen en el navegador antes de subirla
- * para evitar problemas de límite de tamaño y acelerar la subida
+ * (una foto de iPhone de ~3 MB queda en ~200-400 KB sin pérdida visible).
+ * Devuelve null si el navegador no puede leer el archivo.
  */
-async function compressImage(file: File, maxDimension = 1400, quality = 0.85): Promise<File> {
+async function compressImage(file: File, maxDimension = 1600, quality = 0.85): Promise<File | null> {
   return new Promise((resolve) => {
-    // Si no es imagen estándar, devolver el original
-    if (!file.type.startsWith("image/")) {
-      resolve(file);
-      return;
-    }
-
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = (event) => {
@@ -55,30 +91,32 @@ async function compressImage(file: File, maxDimension = 1400, quality = 0.85): P
 
         const ctx = canvas.getContext("2d");
         if (!ctx) {
-          resolve(file);
+          resolve(null);
           return;
         }
 
         ctx.drawImage(img, 0, 0, width, height);
 
-        canvas.toBlob(
-          (blob) => {
-            if (!blob) {
-              resolve(file);
-              return;
-            }
-            const compressedFile = new File([blob], file.name.replace(/\.[^.]+$/, ".webp"), {
-              type: "image/webp",
-            });
-            resolve(compressedFile);
-          },
-          "image/webp",
-          quality
-        );
+        (async () => {
+          // WebP es lo más liviano. Safari (iPhone/Mac) no siempre sabe generar WebP y
+          // devuelve PNG (pesadísimo): en ese caso se usa JPG.
+          let blob = await canvasToBlob(canvas, "image/webp", quality);
+          let ext = "webp";
+          if (!blob || blob.type !== "image/webp") {
+            blob = await canvasToBlob(canvas, "image/jpeg", quality);
+            ext = "jpg";
+          }
+          if (!blob) {
+            resolve(null);
+            return;
+          }
+          const baseName = file.name.replace(/\.[^.]+$/, "") || "foto";
+          resolve(new File([blob], `${baseName}.${ext}`, { type: blob.type }));
+        })();
       };
-      img.onerror = () => resolve(file);
+      img.onerror = () => resolve(null);
     };
-    reader.onerror = () => resolve(file);
+    reader.onerror = () => resolve(null);
   });
 }
 
@@ -248,11 +286,17 @@ export function ProductFormModal({
     setUploadingImage(true);
     setErrorMessage(null);
 
+    const unreadable: string[] = [];
+
     try {
       for (let i = 0; i < files.length; i++) {
         const originalFile = files[i];
         // Comprimir en el navegador antes de enviar
-        const readyFile = await compressImage(originalFile);
+        const readyFile = await prepareImage(originalFile);
+        if (!readyFile) {
+          unreadable.push(originalFile.name);
+          continue;
+        }
 
         const formData = new FormData();
         formData.append("file", readyFile);
@@ -264,6 +308,12 @@ export function ProductFormModal({
         } else {
           setErrorMessage(res.error || "No se pudo subir la foto.");
         }
+      }
+
+      if (unreadable.length > 0) {
+        setErrorMessage(
+          `No se pudo abrir: ${unreadable.join(", ")}. Puede que el archivo esté dañado o no sea una foto. Probá con otra.`
+        );
       }
     } catch (err) {
       console.error(err);
@@ -758,7 +808,7 @@ export function ProductFormModal({
                 <>
                   <Loader2 className="h-6 w-6 text-stone-600 animate-spin" />
                   <span className="text-xs font-medium text-stone-600">
-                    Optimizando y subiendo foto a Supabase...
+                    Preparando y subiendo fotos…
                   </span>
                 </>
               ) : (
