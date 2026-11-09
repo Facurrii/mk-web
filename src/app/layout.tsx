@@ -28,10 +28,14 @@ const scriptFont = Dancing_Script({
 });
 
 export const metadata: Metadata = {
+  // Dirección oficial de la tienda (para los links al compartir por WhatsApp/Instagram).
   metadataBase: new URL(
-    process.env.VERCEL_PROJECT_PRODUCTION_URL
-      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-      : "http://localhost:3000"
+    process.env.NEXT_PUBLIC_SITE_URL ||
+      (process.env.VERCEL_ENV === "production"
+        ? "https://mkdesign-ar.vercel.app"
+        : process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : "http://localhost:3000")
   ),
   title: {
     default: "Mer Kilmurray Design | Accesorios Textiles y Organización",
