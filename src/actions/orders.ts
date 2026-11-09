@@ -37,7 +37,7 @@ export async function createOrderAction(data: CreateOrderInput) {
     // Instancia el cliente seguro con Service Role
     const supabase = createAdminClient();
 
-    // 1. VERIFICACIÓN DE STOCK DISPONIBLE EN TIEMPO REAL
+    // 1. VERIFICACIÓN DE STOCK DISPONIBLE (no reserva: solo evita pedir algo agotado)
     for (const item of validated.items) {
       if (item.variantId) {
         const { data: variantData } = await supabase
@@ -87,7 +87,9 @@ export async function createOrderAction(data: CreateOrderInput) {
       };
     }
 
-    // 3. INSERTAR ITEMS Y DESCONTAR STOCK
+    // 3. INSERTAR ITEMS
+    // El stock NO se descuenta acá: se descuenta recién cuando el admin confirma
+    // el pago desde /admin/pedidos (función SQL confirm_order_payment).
     const orderItems = validated.items.map((item) => ({
       order_id: order.id,
       product_id: item.productId,
@@ -100,43 +102,7 @@ export async function createOrderAction(data: CreateOrderInput) {
 
     await supabase.from("order_items").insert(orderItems);
 
-    // Descontar el stock en la base de datos
-    for (const item of validated.items) {
-      if (item.variantId) {
-        const { data: currentVar } = await supabase
-          .from("product_variants")
-          .select("id, stock, product_id")
-          .eq("id", item.variantId)
-          .maybeSingle();
-
-        if (currentVar) {
-          const newStock = Math.max(0, currentVar.stock - item.quantity);
-          await supabase
-            .from("product_variants")
-            .update({ stock: newStock })
-            .eq("id", item.variantId);
-
-          // Si todas las variantes de este producto quedaron en 0, pausar producto automáticamente
-          const { data: allVars } = await supabase
-            .from("product_variants")
-            .select("stock")
-            .eq("product_id", currentVar.product_id);
-
-          const totalRemaining = (allVars || []).reduce((acc, v) => acc + (v.stock || 0), 0);
-          if (totalRemaining === 0) {
-            await supabase
-              .from("products")
-              .update({ is_active: false })
-              .eq("id", currentVar.product_id);
-          }
-        }
-      }
-    }
-
     revalidatePath("/admin/pedidos");
-    revalidatePath("/admin/productos");
-    revalidatePath("/productos");
-    revalidatePath("/");
 
     return {
       success: true,

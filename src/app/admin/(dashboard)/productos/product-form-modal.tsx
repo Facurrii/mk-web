@@ -726,8 +726,8 @@ export function ProductFormModal({
                 Estado de publicación
               </span>
               <span className="text-xs text-stone-500">
-                {totalStock === 0
-                  ? "Como todas las variantes tienen stock 0, el producto quedará pausado (agotado) automáticamente."
+                {isActive && totalStock === 0
+                  ? "Visible en la tienda como Agotado: se puede ver pero no comprar."
                   : isActive
                   ? "Visible para los compradores en la tienda."
                   : "Oculto en la tienda (ideal para preparar lanzamientos)."}
@@ -736,11 +736,10 @@ export function ProductFormModal({
 
             <button
               type="button"
-              disabled={totalStock === 0}
               onClick={() => setIsActive(!isActive)}
               className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold transition ${
-                totalStock === 0
-                  ? "bg-rose-100 text-rose-700 border border-rose-200 cursor-not-allowed opacity-80"
+                isActive && totalStock === 0
+                  ? "bg-rose-100 text-rose-700 border border-rose-200"
                   : isActive
                   ? "bg-emerald-100 text-emerald-800 border border-emerald-300"
                   : "bg-stone-200 text-stone-700 border border-stone-300"
@@ -748,14 +747,14 @@ export function ProductFormModal({
             >
               <span
                 className={`h-2 w-2 rounded-full ${
-                  totalStock === 0
+                  isActive && totalStock === 0
                     ? "bg-rose-500"
                     : isActive
                     ? "bg-emerald-600"
                     : "bg-stone-500"
                 }`}
               />
-              <span>{totalStock === 0 ? "Agotado (0 stock)" : isActive ? "Publicado" : "Pausado"}</span>
+              <span>{isActive && totalStock === 0 ? "Publicado · Agotado" : isActive ? "Publicado" : "Pausado"}</span>
             </button>
           </div>
 

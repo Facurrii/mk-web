@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { isAdmin, UNAUTHORIZED } from "@/lib/supabase/require-admin";
 import { slugify } from "@/lib/utils";
 import { Product } from "@/types/database";
 
@@ -24,6 +25,8 @@ export interface SaveProductInput {
  * Guarda (crea o edita) un producto en Supabase, gestionando stock y estado automático
  */
 export async function saveProductAction(data: SaveProductInput) {
+  if (!(await isAdmin())) return UNAUTHORIZED;
+
   try {
     const name = data.name?.trim();
     if (!name) {
@@ -41,8 +44,9 @@ export async function saveProductAction(data: SaveProductInput) {
     // Calcular el stock total sumando todas las variantes
     const totalStock = data.variants.reduce((acc, v) => acc + (Math.max(0, Number(v.stock) || 0)), 0);
 
-    // LÓGICA AUTOMÁTICA: Si el stock total es 0, se pausa automáticamente para no vender sin stock
-    const effectiveIsActive = totalStock === 0 ? false : data.is_active;
+    // Con stock 0 el producto sigue visible en la tienda como "Agotado" (no se puede comprar).
+    // Solo se oculta si el admin lo pausa a mano.
+    const effectiveIsActive = data.is_active;
 
     const supabase = createAdminClient();
 
@@ -163,7 +167,8 @@ export async function saveProductAction(data: SaveProductInput) {
     revalidatePath("/productos");
     revalidatePath("/");
 
-    const statusNote = totalStock === 0 ? " (Aviso: quedó pausado porque su stock total es 0)" : "";
+    const statusNote =
+      totalStock === 0 && effectiveIsActive ? " (Aviso: se muestra como Agotado porque su stock es 0)" : "";
 
     return {
       success: true,
@@ -180,6 +185,8 @@ export async function saveProductAction(data: SaveProductInput) {
  * Elimina un producto por ID
  */
 export async function deleteProductAction(id: string) {
+  if (!(await isAdmin())) return UNAUTHORIZED;
+
   try {
     const supabase = createAdminClient();
 
@@ -202,28 +209,14 @@ export async function deleteProductAction(id: string) {
 }
 
 /**
- * Cambia el estado publicado/pausado de un producto
- * No permite publicar si el stock total es 0
+ * Cambia el estado publicado/pausado de un producto.
+ * Con stock 0 puede estar publicado: se muestra como "Agotado".
  */
 export async function toggleProductStatusAction(id: string, is_active: boolean) {
+  if (!(await isAdmin())) return UNAUTHORIZED;
+
   try {
     const supabase = createAdminClient();
-
-    // Si intenta publicar, verificar primero que tenga al menos 1 unidad de stock
-    if (is_active) {
-      const { data: variants } = await supabase
-        .from("product_variants")
-        .select("stock")
-        .eq("product_id", id);
-
-      const totalStock = (variants || []).reduce((acc, v) => acc + (v.stock || 0), 0);
-      if (totalStock <= 0) {
-        return {
-          success: false,
-          error: "No podés publicar este producto porque no tiene stock disponible (0 unidades). Editá el producto y sumá stock a alguna variante para publicarlo.",
-        };
-      }
-    }
 
     const { error } = await supabase
       .from("products")
@@ -253,6 +246,8 @@ export async function toggleProductStatusAction(id: string, is_active: boolean) 
  * Actualiza el precio rápido desde la tabla
  */
 export async function updateProductPriceAction(id: string, base_price: number | null) {
+  if (!(await isAdmin())) return UNAUTHORIZED;
+
   try {
     const supabase = createAdminClient();
 
@@ -281,6 +276,8 @@ export async function updateProductPriceAction(id: string, base_price: number | 
  * Sube una imagen a Supabase Storage (bucket 'products') con normalización de MIME
  */
 export async function uploadProductImageAction(formData: FormData) {
+  if (!(await isAdmin())) return UNAUTHORIZED;
+
   try {
     const file = formData.get("file") as File;
     if (!file) {

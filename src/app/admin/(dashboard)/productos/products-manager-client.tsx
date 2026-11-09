@@ -153,19 +153,8 @@ export function ProductsManagerClient({
     }
   };
 
-  // Toggle estado publicado / pausado con chequeo de stock 0
+  // Toggle estado publicado / pausado (con stock 0 se publica como "Agotado")
   const handleToggleActive = async (product: Product) => {
-    const totalStock = getProductTotalStock(product);
-
-    // Si tiene 0 stock y quiere publicarlo, no permitirlo
-    if (!product.is_active && totalStock === 0) {
-      showToast(
-        "No podés publicar este producto porque tiene 0 stock. Hacé clic en 'Editar' y agregá unidades a algún color para reactivarlo.",
-        "error"
-      );
-      return;
-    }
-
     const nextState = !product.is_active;
 
     // Actualización optimista en la UI
@@ -414,21 +403,21 @@ export function ProductsManagerClient({
                           type="button"
                           onClick={() => handleToggleActive(p)}
                           className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold cursor-pointer transition shadow-2xs ${
-                            totalStock === 0
+                            p.is_active && totalStock === 0
                               ? "bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100"
                               : p.is_active
                               ? "bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100"
                               : "bg-stone-100 text-stone-500 border border-stone-300 hover:bg-stone-200"
                           }`}
                           title={
-                            totalStock === 0
-                              ? "Agotado: Sumá stock para reactivarlo"
+                            p.is_active && totalStock === 0
+                              ? "Agotado: se ve en la tienda pero no se puede comprar. Clic para pausar."
                               : "Hacé clic para cambiar estado"
                           }
                         >
                           <span
                             className={`h-1.5 w-1.5 rounded-full ${
-                              totalStock === 0
+                              p.is_active && totalStock === 0
                                 ? "bg-rose-500"
                                 : p.is_active
                                 ? "bg-emerald-500"
@@ -436,7 +425,7 @@ export function ProductsManagerClient({
                             }`}
                           />
                           <span>
-                            {totalStock === 0 ? "Agotado" : p.is_active ? "Publicado" : "Pausado"}
+                            {p.is_active && totalStock === 0 ? "Agotado" : p.is_active ? "Publicado" : "Pausado"}
                           </span>
                         </button>
                       </td>

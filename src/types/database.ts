@@ -58,6 +58,9 @@ export type Order = {
   total_amount: number;
   status: OrderStatus;
   created_at: string;
+  payment_confirmed_at?: string | null;
+  cancelled_at?: string | null;
+  cancel_reason?: string | null;
   items?: OrderItem[];
 };
 
