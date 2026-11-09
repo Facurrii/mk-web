@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getProductBySlug } from "@/lib/products-service";
 import { ProductDetailClient } from "./product-detail-client";
+import { BackButton } from "@/components/shop/back-button";
 import { getPrimaryImageUrl } from "@/lib/product-images";
 
 // Una sola consulta a la base aunque la usen generateMetadata y la página
@@ -45,9 +46,15 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-5 pb-12 sm:py-12">
+      {/* Volver — solo celular (en compu se usan las migas de pan) */}
+      <BackButton
+        fallbackHref={product.category ? `/productos?categoria=${product.category.slug}` : "/productos"}
+        className="mb-5 sm:hidden"
+      />
+
       {/* Breadcrumbs */}
-      <nav className="text-xs text-stone-500 mb-8 flex items-center gap-2">
+      <nav className="text-xs text-stone-500 mb-8 hidden sm:flex items-center gap-2">
         <Link href="/" className="hover:text-stone-800">
           Inicio
         </Link>
