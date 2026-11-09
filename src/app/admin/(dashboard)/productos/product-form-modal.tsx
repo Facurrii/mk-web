@@ -102,6 +102,8 @@ export function ProductFormModal({
   // Estados del formulario
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [measurements, setMeasurements] = useState("");
+  const [includes, setIncludes] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [isPriceOnDemand, setIsPriceOnDemand] = useState(false);
   const [price, setPrice] = useState<string>("");
@@ -135,6 +137,8 @@ export function ProductFormModal({
     if (productToEdit) {
       setName(productToEdit.name || "");
       setDescription(productToEdit.description || "");
+      setMeasurements(productToEdit.measurements || "");
+      setIncludes(productToEdit.includes || "");
       setCategoryId(productToEdit.category_id || (categories[0]?.id || ""));
       setIsActive(productToEdit.is_active ?? true);
 
@@ -175,6 +179,8 @@ export function ProductFormModal({
       // Modo Nuevo Producto
       setName("");
       setDescription("");
+      setMeasurements("");
+      setIncludes("");
       setCategoryId(categories[0]?.id || "");
       setIsPriceOnDemand(false);
       setPrice("");
@@ -311,6 +317,8 @@ export function ProductFormModal({
         id: productToEdit?.id,
         name: name.trim(),
         description: description.trim(),
+        measurements: measurements.trim(),
+        includes: includes.trim(),
         category_id: categoryId,
         base_price: numericPrice,
         is_active: isActive,
@@ -421,6 +429,38 @@ export function ProductFormModal({
               placeholder="Contá de qué material está hecho, qué función cumple y cómo ayuda a organizarse..."
               className="w-full rounded-xl border border-stone-300 bg-white px-3.5 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 focus:border-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-900 leading-relaxed"
             />
+          </div>
+
+          {/* 3b. Medidas y qué incluye (se muestran en la ficha) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-stone-700 mb-1.5">
+                Medidas <span className="font-normal normal-case text-stone-400">(opcional)</span>
+              </label>
+              <textarea
+                rows={6}
+                value={measurements}
+                onChange={(e) => setMeasurements(e.target.value)}
+                placeholder={["Ancho: 46 cm", "Alto: 38 cm", "Profundidad: 22 cm", "Bolsillo exterior:", "Ancho: 32 cm", "Alto: 26 cm"].join("\n")}
+                className="w-full rounded-xl border border-stone-300 bg-white px-3.5 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 focus:border-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-900 leading-relaxed font-mono"
+              />
+              <p className="mt-1 text-[11px] text-stone-500">
+                Una medida por línea. Para un grupo (ej. bolsillo), escribí su nombre terminado en &ldquo;:&rdquo;.
+              </p>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-stone-700 mb-1.5">
+                Qué incluye <span className="font-normal normal-case text-stone-400">(opcional)</span>
+              </label>
+              <textarea
+                rows={6}
+                value={includes}
+                onChange={(e) => setIncludes(e.target.value)}
+                placeholder={["1 carretel de hilo blanco", "1 cinta métrica", "2 agujas"].join("\n")}
+                className="w-full rounded-xl border border-stone-300 bg-white px-3.5 py-2.5 text-sm text-stone-900 placeholder:text-stone-400 focus:border-stone-900 focus:outline-none focus:ring-1 focus:ring-stone-900 leading-relaxed"
+              />
+              <p className="mt-1 text-[11px] text-stone-500">Un elemento por línea. Dejalo vacío si no aplica.</p>
+            </div>
           </div>
 
           {/* 4. Precio y Switch "Precio a consultar" */}

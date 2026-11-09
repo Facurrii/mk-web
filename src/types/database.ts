@@ -35,6 +35,10 @@ export type Product = {
   base_price: number | null;
   is_active: boolean;
   is_featured: boolean;
+  /** Medidas, una por línea ("Ancho: 46 cm"); "Grupo:" abre un grupo. */
+  measurements?: string | null;
+  /** Qué incluye, un elemento por línea. */
+  includes?: string | null;
   created_at: string;
   updated_at: string;
   category?: Category;

@@ -10,6 +10,8 @@ export interface SaveProductInput {
   id?: string;
   name: string;
   description: string;
+  measurements?: string;
+  includes?: string;
   category_id: string;
   base_price: number | null;
   is_active: boolean;
@@ -119,6 +121,8 @@ export async function saveProductAction(data: SaveProductInput) {
         .update({
           name: name,
           description: data.description?.trim() || null,
+          measurements: data.measurements?.trim() || null,
+          includes: data.includes?.trim() || null,
           category_id: data.category_id,
           base_price: data.base_price,
           is_active: effectiveIsActive,
@@ -154,6 +158,8 @@ export async function saveProductAction(data: SaveProductInput) {
           name: name,
           slug: finalSlug,
           description: data.description?.trim() || null,
+          measurements: data.measurements?.trim() || null,
+          includes: data.includes?.trim() || null,
           category_id: data.category_id,
           base_price: data.base_price,
           is_active: effectiveIsActive,

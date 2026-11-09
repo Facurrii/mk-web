@@ -18,6 +18,7 @@ import { useCartStore } from "@/store/cart-store";
 import { COLOR_PALETTE, STORE_INFO } from "@/lib/constants";
 import { getImagesForVariant, pickDefaultVariant } from "@/lib/product-images";
 import { ProductGallery } from "@/components/shop/product-gallery";
+import { ProductDetails } from "@/components/shop/product-details";
 
 interface ProductDetailClientProps {
   product: Product;
@@ -268,6 +269,9 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
             </span>
           </a>
         </div>
+
+        {/* Medidas y qué incluye */}
+        <ProductDetails measurements={product.measurements} includes={product.includes} />
 
         {/* Trust & Shipping info */}
         <div className="rounded-2xl bg-white p-6 space-y-3.5 text-xs text-[#2A1A1E]/80 mt-6 border border-[#631E2E]/10 shadow-2xs">
