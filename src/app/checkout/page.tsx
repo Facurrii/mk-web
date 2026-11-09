@@ -175,10 +175,11 @@ export default function CheckoutPage() {
                 <input
                   type="text"
                   required
+                  autoComplete="name"
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
                   placeholder="Ej: Lucía Gómez"
-                  className="w-full rounded-xl border border-[#631E2E]/20 bg-white px-3.5 py-2.5 text-sm text-[#2A1A1E] focus:border-[#631E2E] focus:outline-none focus:ring-1 focus:ring-[#631E2E]"
+                  className="w-full rounded-xl border border-[#631E2E]/20 bg-white px-3.5 py-2.5 text-base sm:text-sm text-[#2A1A1E] focus:border-[#631E2E] focus:outline-none focus:ring-1 focus:ring-[#631E2E]"
                 />
               </div>
 
@@ -189,10 +190,12 @@ export default function CheckoutPage() {
                 <input
                   type="tel"
                   required
+                  autoComplete="tel"
+                  inputMode="tel"
                   value={customerPhone}
                   onChange={(e) => setCustomerPhone(e.target.value)}
                   placeholder="Ej: 358 1234567"
-                  className="w-full rounded-xl border border-[#631E2E]/20 bg-white px-3.5 py-2.5 text-sm text-[#2A1A1E] focus:border-[#631E2E] focus:outline-none focus:ring-1 focus:ring-[#631E2E]"
+                  className="w-full rounded-xl border border-[#631E2E]/20 bg-white px-3.5 py-2.5 text-base sm:text-sm text-[#2A1A1E] focus:border-[#631E2E] focus:outline-none focus:ring-1 focus:ring-[#631E2E]"
                 />
               </div>
             </div>
@@ -241,10 +244,11 @@ export default function CheckoutPage() {
                   <textarea
                     rows={2}
                     required
+                    autoComplete="street-address"
                     value={deliveryAddress}
                     onChange={(e) => setDeliveryAddress(e.target.value)}
                     placeholder="Ej: Calle San Martín 450, Barrio Centro, Río Cuarto (CP 5800)"
-                    className="w-full rounded-xl border border-[#631E2E]/20 bg-white px-3.5 py-2.5 text-sm text-[#2A1A1E] focus:border-[#631E2E] focus:outline-none focus:ring-1 focus:ring-[#631E2E]"
+                    className="w-full rounded-xl border border-[#631E2E]/20 bg-white px-3.5 py-2.5 text-base sm:text-sm text-[#2A1A1E] focus:border-[#631E2E] focus:outline-none focus:ring-1 focus:ring-[#631E2E]"
                   />
                 </div>
               )}
@@ -297,7 +301,7 @@ export default function CheckoutPage() {
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Ej: Es para un regalo, ¿podrían envolverlo?"
-                className="w-full rounded-xl border border-[#631E2E]/20 bg-white px-3.5 py-2.5 text-sm text-[#2A1A1E] focus:border-[#631E2E] focus:outline-none focus:ring-1 focus:ring-[#631E2E]"
+                className="w-full rounded-xl border border-[#631E2E]/20 bg-white px-3.5 py-2.5 text-base sm:text-sm text-[#2A1A1E] focus:border-[#631E2E] focus:outline-none focus:ring-1 focus:ring-[#631E2E]"
               />
             </div>
 

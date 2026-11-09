@@ -16,6 +16,8 @@ import { Product, ProductVariant } from "@/types/database";
 import { formatPrice } from "@/lib/utils";
 import { useCartStore } from "@/store/cart-store";
 import { COLOR_PALETTE, STORE_INFO } from "@/lib/constants";
+import { getImagesForVariant } from "@/lib/product-images";
+import { ProductGallery } from "@/components/shop/product-gallery";
 
 interface ProductDetailClientProps {
   product: Product;
@@ -43,6 +45,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
   const [added, setAdded] = useState(false);
 
   const currentStock = selectedVariant?.stock ?? 0;
+  const galleryImages = getImagesForVariant(product, selectedVariant?.id);
   const isOutOfStock = currentStock <= 0;
 
   const handleAddToCart = () => {
@@ -70,37 +73,28 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
   )}`;
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start pb-20 sm:pb-0">
       {/* Product Image Stage */}
-      <div className="space-y-4">
-        <div className="aspect-square w-full rounded-3xl bg-white border border-[#631E2E]/10 flex flex-col items-center justify-center p-8 relative overflow-hidden shadow-sm">
-          <ShoppingBag className="h-32 w-32 text-[#631E2E]/20 stroke-[1]" />
-          <span className="font-serif text-lg font-medium text-[#631E2E] mt-4 uppercase tracking-wider">
-            {product.name}
-          </span>
-          <span className="font-script text-xl text-[#B4AF3B] mt-1 lowercase">
-            color: {selectedVariant?.color_name}
-          </span>
-
-          {/* Color pill indicator */}
-          {selectedVariant?.color_hex && (
+      <ProductGallery
+        key={selectedVariant?.id}
+        images={galleryImages}
+        productName={product.name}
+        colorName={selectedVariant?.color_name}
+        overlay={
+          selectedVariant?.color_hex && (
             <div className="absolute top-5 right-5 flex items-center gap-2 rounded-full bg-white/95 px-3.5 py-1.5 shadow-sm border border-[#631E2E]/10">
               <span
                 className="h-3.5 w-3.5 rounded-full border border-stone-300"
                 style={{ backgroundColor: selectedVariant.color_hex }}
               />
-              <span className="text-xs font-semibold text-[#2A1A1E]">
-                {selectedVariant.color_name}
-              </span>
+              <span className="text-xs font-semibold text-[#2A1A1E]">{selectedVariant.color_name}</span>
               {isOutOfStock && (
-                <span className="text-[10px] font-semibold text-rose-600 ml-1">
-                  (Agotado)
-                </span>
+                <span className="text-[10px] font-semibold text-rose-600 ml-1">(Agotado)</span>
               )}
             </div>
-          )}
-        </div>
-      </div>
+          )
+        }
+      />
 
       {/* Details & Actions */}
       <div className="space-y-7">
@@ -291,6 +285,35 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
             <Shield className="h-4 w-4 text-[#B3C1CC]" />
             <span>Pagos seguros por Transferencia o Efectivo al retirar.</span>
           </div>
+        </div>
+      </div>
+
+      {/* Barra fija inferior — solo celular: el botón siempre a mano */}
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#631E2E]/10 bg-[#FBF4E8]/95 backdrop-blur px-4 py-3 shadow-[0_-4px_16px_rgba(99,30,46,0.08)] sm:hidden">
+        <div className="flex items-center gap-3">
+          <div className="min-w-0 flex-1">
+            <span className="block truncate text-[11px] text-[#2A1A1E]/60">
+              {product.name} · {selectedVariant?.color_name}
+            </span>
+            <span className="text-base font-semibold text-[#631E2E]">{formatPrice(product.base_price)}</span>
+          </div>
+          {isOutOfStock ? (
+            <span className="flex items-center gap-1.5 rounded-xl border border-stone-200 bg-white px-4 py-3 text-xs font-semibold text-stone-400">
+              <Ban className="h-4 w-4 text-rose-500" />
+              Agotado
+            </span>
+          ) : (
+            <button
+              type="button"
+              onClick={handleAddToCart}
+              className={`flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold shadow-md transition active:scale-95 ${
+                added ? "bg-[#B4AF3B] text-white" : "bg-[#631E2E] text-[#FBF4E8]"
+              }`}
+            >
+              {added ? <Check className="h-4 w-4" /> : <ShoppingBag className="h-4 w-4" />}
+              {added ? "¡Agregado!" : quantity > 1 ? `Agregar ${quantity}` : "Agregar al pedido"}
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { getCategories, getProducts } from "@/lib/products-service";
 import { ProductCard } from "@/components/shop/product-card";
 import Link from "next/link";
@@ -6,6 +7,14 @@ interface ProductsPageProps {
   searchParams: Promise<{
     categoria?: string;
   }>;
+}
+
+export async function generateMetadata({ searchParams }: ProductsPageProps): Promise<Metadata> {
+  const { categoria } = await searchParams;
+  if (!categoria) return { title: "Catálogo" };
+  const categories = await getCategories();
+  const cat = categories.find((c) => c.slug === categoria);
+  return { title: cat ? `Colección ${cat.name}` : "Catálogo" };
 }
 
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
@@ -80,7 +89,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+        <div className="grid grid-cols-2 gap-3 sm:gap-7 lg:grid-cols-3">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}

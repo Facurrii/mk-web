@@ -117,7 +117,8 @@ export function ProductFormModal({
   const [customColorStock, setCustomColorStock] = useState<number>(5);
 
   // Fotos
-  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  // Fotos: cada una puede pertenecer a un color (null = se muestra para todos)
+  const [images, setImages] = useState<{ url: string; color_name: string | null }[]>([]);
   const [uploadingImage, setUploadingImage] = useState(false);
 
   // Feedback y loading
@@ -161,11 +162,15 @@ export function ProductFormModal({
         ]);
       }
 
-      if (productToEdit.images && productToEdit.images.length > 0) {
-        setImageUrls(productToEdit.images.map((img) => img.image_url));
-      } else {
-        setImageUrls([]);
-      }
+      const colorById = new Map((productToEdit.variants ?? []).map((v) => [v.id, v.color_name]));
+      setImages(
+        [...(productToEdit.images ?? [])]
+          .sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0))
+          .map((img) => ({
+            url: img.image_url,
+            color_name: img.variant_id ? colorById.get(img.variant_id) ?? null : null,
+          }))
+      );
     } else {
       // Modo Nuevo Producto
       setName("");
@@ -179,7 +184,7 @@ export function ProductFormModal({
         { color_name: "Bordó", color_hex: "#800020", stock: 3 },
         { color_name: "Verde", color_hex: "#2D5A27", stock: 4 },
       ]);
-      setImageUrls([]);
+      setImages([]);
     }
 
     setErrorMessage(null);
@@ -248,7 +253,8 @@ export function ProductFormModal({
 
         const res = await uploadProductImageAction(formData);
         if (res.success && res.url) {
-          setImageUrls((prev) => [...prev, res.url]);
+          const url = res.url;
+          setImages((prev) => [...prev, { url, color_name: null }]);
         } else {
           setErrorMessage(res.error || "No se pudo subir la foto.");
         }
@@ -263,7 +269,11 @@ export function ProductFormModal({
   };
 
   const handleRemoveImage = (indexToRemove: number) => {
-    setImageUrls(imageUrls.filter((_, i) => i !== indexToRemove));
+    setImages(images.filter((_, i) => i !== indexToRemove));
+  };
+
+  const handleImageColor = (index: number, color: string | null) => {
+    setImages((prev) => prev.map((img, i) => (i === index ? { ...img, color_name: color } : img)));
   };
 
   // Enviar formulario
@@ -305,7 +315,7 @@ export function ProductFormModal({
         base_price: numericPrice,
         is_active: isActive,
         variants: variants,
-        images: imageUrls,
+        images,
       });
 
       if (res.success && res.product) {
@@ -646,37 +656,46 @@ export function ProductFormModal({
                 Fotos del producto
               </label>
               <p className="text-xs text-stone-500 mt-0.5">
-                Seleccioná fotos desde tu computadora (se optimizan automáticamente antes de guardar).
+                Se optimizan automáticamente. Elegí a qué color pertenece cada foto: en la tienda,
+                al tocar ese color se muestra su foto. La primera es la principal.
               </p>
             </div>
 
             {/* Galería de vistas previas */}
-            {imageUrls.length > 0 && (
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
-                {imageUrls.map((url, idx) => (
-                  <div
-                    key={`${url}-${idx}`}
-                    className="group relative aspect-square rounded-xl overflow-hidden border border-stone-300 bg-stone-100 shadow-2xs"
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={url}
-                      alt={`Foto ${idx + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveImage(idx)}
-                      className="absolute top-1.5 right-1.5 p-1 rounded-full bg-rose-600 text-white opacity-0 group-hover:opacity-100 transition shadow"
-                      title="Eliminar foto"
+            {images.length > 0 && (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {images.map((img, idx) => (
+                  <div key={`${img.url}-${idx}`} className="space-y-1.5">
+                    <div className="group relative aspect-square rounded-xl overflow-hidden border border-stone-300 bg-stone-100 shadow-2xs">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={img.url} alt={`Foto ${idx + 1}`} className="w-full h-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveImage(idx)}
+                        className="absolute top-1.5 right-1.5 p-1 rounded-full bg-rose-600 text-white sm:opacity-0 group-hover:opacity-100 transition shadow"
+                        title="Eliminar foto"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                      {idx === 0 && (
+                        <span className="absolute bottom-1.5 left-1.5 text-[9px] bg-stone-900/80 text-white px-1.5 py-0.5 rounded">
+                          Principal
+                        </span>
+                      )}
+                    </div>
+                    <select
+                      value={img.color_name ?? ""}
+                      onChange={(e) => handleImageColor(idx, e.target.value || null)}
+                      className="w-full rounded-lg border border-stone-300 bg-white px-2 py-1 text-[11px] text-stone-700"
+                      aria-label={`Color de la foto ${idx + 1}`}
                     >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                    {idx === 0 && (
-                      <span className="absolute bottom-1.5 left-1.5 text-[9px] bg-stone-900/80 text-white px-1.5 py-0.5 rounded">
-                        Principal
-                      </span>
-                    )}
+                      <option value="">Todos los colores</option>
+                      {variants.map((v) => (
+                        <option key={v.color_name} value={v.color_name}>
+                          {v.color_name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 ))}
               </div>

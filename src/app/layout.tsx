@@ -28,7 +28,21 @@ const scriptFont = Dancing_Script({
 });
 
 export const metadata: Metadata = {
-  title: "Mer Kilmurray Design | Accesorios Textiles y Organización",
+  metadataBase: new URL(
+    process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : "http://localhost:3000"
+  ),
+  title: {
+    default: "Mer Kilmurray Design | Accesorios Textiles y Organización",
+    // Cada página define su título y se completa así: "Neceser organizador | MK"
+    template: "%s | MK",
+  },
+  openGraph: {
+    siteName: "Mer Kilmurray Design",
+    locale: "es_AR",
+    type: "website",
+  },
   description:
     "Diseño funcional de autor: bolsos para máquina de coser, fundas para notebook, organizadores y complementos textiles creados por Mercedes Kilmurray.",
   keywords: [

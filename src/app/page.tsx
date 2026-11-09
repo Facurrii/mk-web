@@ -78,7 +78,7 @@ export default async function HomePage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-7">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-3 md:gap-7">
           {categories.map((cat, idx) => {
             // Alternar los tonos suaves de la paleta en las tarjetas
             const accentColors = [
@@ -92,30 +92,32 @@ export default async function HomePage() {
               <Link
                 key={cat.id}
                 href={`/productos?categoria=${cat.slug}`}
-                className={`group relative flex flex-col justify-between rounded-2xl border border-[#631E2E]/10 bg-white p-8 transition-all duration-300 hover:shadow-xl ${accent.border}`}
+                className={`group relative flex flex-row items-center gap-4 p-4 md:flex-col md:items-stretch md:justify-between md:gap-0 md:p-8 rounded-2xl border border-[#631E2E]/10 bg-white transition-all duration-300 hover:shadow-xl ${accent.border}`}
               >
-                <div>
+                <div className="flex min-w-0 flex-1 items-center gap-4 md:block md:flex-none">
                   <div
-                    className={`h-14 w-14 rounded-2xl ${accent.bg} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}
+                    className={`h-12 w-12 shrink-0 md:h-14 md:w-14 rounded-2xl ${accent.bg} flex items-center justify-center md:mb-6 group-hover:scale-110 transition-transform duration-300`}
                   >
                     {categoryIcons[cat.slug] || <Sparkles className="h-6 w-6 text-[#631E2E]" />}
                   </div>
 
-                  <span className={`text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full ${accent.pill}`}>
-                    Línea {cat.name}
-                  </span>
+                  <div className="min-w-0">
+                    <span className={`hidden md:inline text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full ${accent.pill}`}>
+                      Línea {cat.name}
+                    </span>
 
-                  <h3 className="font-serif text-2xl font-medium text-[#631E2E] mt-3 group-hover:text-[#47131F] transition">
-                    {cat.name}
-                  </h3>
-                  <p className="mt-2 text-sm text-[#2A1A1E]/70 leading-relaxed font-light">
-                    {cat.description}
-                  </p>
+                    <h3 className="font-serif text-lg md:text-2xl font-medium text-[#631E2E] md:mt-3 group-hover:text-[#47131F] transition">
+                      {cat.name}
+                    </h3>
+                    <p className="mt-0.5 md:mt-2 text-xs md:text-sm text-[#2A1A1E]/70 leading-relaxed font-light line-clamp-2 md:line-clamp-none">
+                      {cat.description}
+                    </p>
+                  </div>
                 </div>
 
-                <div className="mt-8 pt-4 border-t border-[#631E2E]/10 flex items-center gap-2 text-xs font-semibold text-[#631E2E] uppercase tracking-wider group-hover:gap-3 transition-all">
-                  <span>Explorar piezas</span>
-                  <ArrowRight className="h-3.5 w-3.5" />
+                <div className="shrink-0 md:mt-8 md:pt-4 md:border-t border-[#631E2E]/10 flex items-center gap-2 text-xs font-semibold text-[#631E2E] uppercase tracking-wider group-hover:gap-3 transition-all">
+                  <span className="hidden md:inline">Explorar piezas</span>
+                  <ArrowRight className="h-4 w-4 md:h-3.5 md:w-3.5" />
                 </div>
               </Link>
             );
@@ -144,7 +146,7 @@ export default async function HomePage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3">
           {featuredProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}

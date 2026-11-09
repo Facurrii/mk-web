@@ -1,7 +1,13 @@
+import { cache } from "react";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getProductBySlug } from "@/lib/products-service";
 import { ProductDetailClient } from "./product-detail-client";
+import { getPrimaryImageUrl } from "@/lib/product-images";
+
+// Una sola consulta a la base aunque la usen generateMetadata y la página
+const getProduct = cache(getProductBySlug);
 
 interface ProductPageProps {
   params: Promise<{
@@ -9,10 +15,30 @@ interface ProductPageProps {
   }>;
 }
 
+export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const product = await getProduct(slug);
+  if (!product) return { title: "Producto no encontrado" };
+
+  const description =
+    product.description?.slice(0, 160) ?? `${product.name}, diseño textil de autor de Mer Kilmurray.`;
+  const image = getPrimaryImageUrl(product);
+
+  return {
+    title: product.name,
+    description,
+    openGraph: {
+      title: `${product.name} | Mer Kilmurray Design`,
+      description,
+      url: `/productos/${product.slug}`,
+      ...(image ? { images: [{ url: image, alt: product.name }] } : {}),
+    },
+  };
+}
 
 export default async function ProductDetailPage({ params }: ProductPageProps) {
   const { slug } = await params;
-  const product = await getProductBySlug(slug);
+  const product = await getProduct(slug);
 
   if (!product) {
     notFound();

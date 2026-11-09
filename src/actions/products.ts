@@ -18,7 +18,67 @@ export interface SaveProductInput {
     color_hex: string;
     stock: number;
   }[];
-  images?: string[];
+  /** Fotos en orden. color_name = color al que pertenece (null = todos los colores). */
+  images?: { url: string; color_name: string | null }[];
+}
+
+type AdminClient = ReturnType<typeof createAdminClient>;
+
+/**
+ * Sincroniza las variantes SIN borrarlas y recrearlas: así los pedidos pendientes
+ * y los carritos abiertos siguen apuntando al mismo id de variante.
+ * Se emparejan por nombre de color (sin distinguir mayúsculas).
+ */
+async function syncVariants(supabase: AdminClient, productId: string, variants: SaveProductInput["variants"]) {
+  const { data: existing } = await supabase
+    .from("product_variants")
+    .select("id, color_name")
+    .eq("product_id", productId);
+
+  const byName = new Map((existing ?? []).map((v) => [v.color_name.trim().toLowerCase(), v.id]));
+  const keep = new Set<string>();
+
+  for (const v of variants) {
+    const row = {
+      color_name: v.color_name.trim(),
+      color_hex: v.color_hex || null,
+      stock: Math.max(0, Number(v.stock) || 0),
+    };
+    const id = byName.get(row.color_name.toLowerCase());
+    if (id) {
+      keep.add(id);
+      await supabase.from("product_variants").update(row).eq("id", id);
+    } else {
+      await supabase.from("product_variants").insert({ ...row, product_id: productId });
+    }
+  }
+
+  const toDelete = (existing ?? []).filter((v) => !keep.has(v.id)).map((v) => v.id);
+  if (toDelete.length > 0) {
+    await supabase.from("product_variants").delete().in("id", toDelete);
+  }
+}
+
+/** Reemplaza las fotos del producto, asociando cada una a su variante de color. */
+async function syncImages(supabase: AdminClient, productId: string, images: NonNullable<SaveProductInput["images"]>) {
+  await supabase.from("product_images").delete().eq("product_id", productId);
+  if (images.length === 0) return;
+
+  const { data: vars } = await supabase
+    .from("product_variants")
+    .select("id, color_name")
+    .eq("product_id", productId);
+  const idByName = new Map((vars ?? []).map((v) => [v.color_name.trim().toLowerCase(), v.id]));
+
+  await supabase.from("product_images").insert(
+    images.map((img, index) => ({
+      product_id: productId,
+      variant_id: img.color_name ? idByName.get(img.color_name.trim().toLowerCase()) ?? null : null,
+      image_url: img.url,
+      is_primary: index === 0,
+      display_order: index,
+    }))
+  );
 }
 
 /**
@@ -71,29 +131,8 @@ export async function saveProductAction(data: SaveProductInput) {
         return { success: false, error: "No se pudo actualizar el producto. Verificá los datos e intentá de nuevo." };
       }
 
-      // Reemplazar variantes de color con su stock individual
-      await supabase.from("product_variants").delete().eq("product_id", productId);
-
-      const variantsToInsert = data.variants.map((v) => ({
-        product_id: productId,
-        color_name: v.color_name,
-        color_hex: v.color_hex || null,
-        stock: Math.max(0, Number(v.stock) || 0),
-      }));
-
-      await supabase.from("product_variants").insert(variantsToInsert);
-
-      // Reemplazar imágenes si se enviaron
-      if (data.images && data.images.length > 0) {
-        await supabase.from("product_images").delete().eq("product_id", productId);
-        const imagesToInsert = data.images.map((url, index) => ({
-          product_id: productId,
-          image_url: url,
-          is_primary: index === 0,
-          display_order: index,
-        }));
-        await supabase.from("product_images").insert(imagesToInsert);
-      }
+      await syncVariants(supabase, productId, data.variants);
+      if (data.images) await syncImages(supabase, productId, data.images);
     } else {
       // 2. CREACIÓN DE NUEVO PRODUCTO
       let baseSlug = slugify(name);
@@ -130,25 +169,8 @@ export async function saveProductAction(data: SaveProductInput) {
 
       productId = newProd.id;
 
-      // Insertar variantes con su stock
-      const variantsToInsert = data.variants.map((v) => ({
-        product_id: productId,
-        color_name: v.color_name,
-        color_hex: v.color_hex || null,
-        stock: Math.max(0, Number(v.stock) || 0),
-      }));
-      await supabase.from("product_variants").insert(variantsToInsert);
-
-      // Insertar imágenes si hay
-      if (data.images && data.images.length > 0) {
-        const imagesToInsert = data.images.map((url, index) => ({
-          product_id: productId,
-          image_url: url,
-          is_primary: index === 0,
-          display_order: index,
-        }));
-        await supabase.from("product_images").insert(imagesToInsert);
-      }
+      await syncVariants(supabase, productId!, data.variants);
+      if (data.images) await syncImages(supabase, productId!, data.images);
     }
 
     // Consultar el producto completo con sus relaciones para devolverlo al cliente
